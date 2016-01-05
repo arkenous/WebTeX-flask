@@ -65,7 +65,11 @@ def logout():
 
 @app.route('/readDirectory', methods=['POST'])
 def read_directory():
-    user_dirpath = base + '/static/storage/' + session.get('username')
+    storage_path = base+'/static/storage'
+    if not os.path.exists(storage_path) or not os.path.isdir(storage_path):
+        os.mkdir(storage_path)
+
+    user_dirpath = storage_path+'/'+session.get('username')
     if os.path.exists(user_dirpath) and os.path.isdir(user_dirpath):
         directory_list = os.listdir(user_dirpath)
         dictionary = {'name': directory_list}
