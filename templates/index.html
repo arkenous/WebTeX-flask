@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang=ja>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>WebTeX</title>
+
+  <!-- Bootstrap CDN -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+
+  <link rel="stylesheet" href="../static/css/editor.css">
+</head>
+<body>
+<!---------------------------------------------------------------------->
+<!--                         Navigation bar                           -->
+<!---------------------------------------------------------------------->
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand">WebTeX</a>
+    </div> <!-- navbar-header -->
+    <ul class="nav navbar-nav">
+      <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+           aria-expanded="false">Directory list <span class="caret"></span></a>
+        <ul class="dropdown-menu" id="directorylist">
+          <li><a href="#createDirectoryModal" data-toggle="modal">Create directory</a></li>
+          <li role="separator" class="divider"></li>
+        </ul>
+      </li> <!-- dropdown -->
+      <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+           aria-expanded="false">File list <span class="caret"></span></a>
+        <ul class="dropdown-menu" id="filelist">
+        </ul>
+      </li> <!-- dropdown -->
+      <li><a href="#" id="compile">Compile</a></li>
+      <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+           aria-expanded="false">Download <span class="caret"></span></a>
+        <ul class="dropdown-menu" id="download">
+        </ul>
+      </li> <!-- dropdown -->
+      <li><p class="navbar-text">CWD: <a href="#" class="navbar-link" id="cwd"></a></p></li>
+    </ul> <!-- nav navbar-nav -->
+    <ul class="nav navbar-nav navbar-right">
+      <li><p class="navbar-text">Signed in as: <a href="#" class="navbar-link" id="username">{{ session.username }}</a>
+      </p>
+      <li><a href="/logout" id="logout">Logout</a></li>
+    </ul>
+  </div> <!-- container-fluid -->
+</nav> <!-- navbar -->
+
+<div class="container-fluid">
+  <div class="row">
+
+    <!---------------------------------------------------------------------->
+    <!--        Editor, Preview, and Result (Compile/RedPen)              -->
+    <!---------------------------------------------------------------------->
+    <div class="col-sm-12 col-md-12" id="main">
+      <div class="row">
+        <div class="col-sm-6 col-md-6" id="editor"></div>
+        <div class="col-sm-6 col-md-6" id="preview">
+        </div> <!-- preview -->
+      </div> <!-- row -->
+      <div class="row">
+        <div class="col-sm-6 col-md-6">
+          <div class="accordion" id="result">
+            <div class="accordion-group">
+              <div class="accordion-heading">
+                <div class="btn-group btn-group-justified" role="group" aria-label="...">
+                  <a class="accordion-toggle btn btn-info" data-toggle="collapse" data-parent="#result"
+                     href="#result-body">Result</a>
+                </div>
+              </div>
+              <div id="result-body" class="accordion-body collapse">
+                <div class="accordion-inner">
+                  <div class="panel panel-info">
+                    <div class="panel-body" id="result-detail">
+                      <p class="text-center">result</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div> <!-- col-sm-6 col-md-6 -->
+        <div class="col-sm-6 col-md-6" id="redpen">
+          <div class="accordion" id="redpen">
+            <div class="accordion-group">
+              <div class="accordion-heading">
+                <div class="btn-group btn-group-justified" role="group" aria-label="...">
+                  <a class="accordion-toggle btn btn-danger" data-toggle="collapse" data-parent="#redpen"
+                     href="#redpen-body">RedPen</a>
+                </div>
+              </div>
+              <div id="redpen-body" class="accordion-body collapse">
+                <div class="accordion-inner">
+                  <div class="panel panel-danger">
+                    <div class="panel-body" id="redpen-detail">
+                      <p class="text-center">redpen</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div> <!-- row -->
+    </div> <!-- main -->
+
+  </div> <!-- row -->
+</div> <!-- container-fluid -->
+
+<!-- ディレクトリ作成用モーダル -->
+<div id="createDirectoryModal" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 class="modal-title">ディレクトリ作成</h3>
+      </div>
+      <div class="modal-body">
+        <p>作成したいディレクトリ名を入力してください</p>
+        <input type="text" class="directoryName" id="directoryName" placeholder="Report">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="createDirectory" data-dismiss="modal" aria-hidden="true">作成
+        </button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal" aria-hidden="true">キャンセル</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ファイルアップロード用モーダル -->
+<div id="uploadFileModal" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 class="modal-title">ファイルアップロード</h3>
+      </div>
+      <div class="modal-body">
+        <form class="form col-md-12 center-block" method="POST" enctype="multipart/form-data" id="uploadForm">
+          <div class=form-group">
+            <input type="file" class="form-control" name="file" aria-describedby="upload_desc"/>
+          </div>
+          <div class="form-group">
+            <button class="btn btn-primary btn-block" data-dismiss="modal" aria-hidden="true" id="upload">Upload
+            </button>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer" style="border-top: 0px;">
+        <button type="button" class="btn btn-danger" data-dismiss="modal" aria-hidden="true">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script src="../static/ace-builds/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+  var editor = ace.edit("editor");
+  editor.setTheme("ace/theme/monokai");
+  editor.getSession().setMode("ace/mode/latex");
+  editor.$blockScrolling = Infinity
+  editor.getSession().setUseWrapMode(true);
+  editor.getSession().setWrapLimitRange(80, 80);
+</script>
+<script src="../static/js/main.js"></script>
+</body>
+</html>
