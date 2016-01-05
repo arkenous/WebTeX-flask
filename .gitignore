@@ -13,3 +13,7 @@ bin
 include
 lib
 pip-selfcheck.json
+
+# WebTeX configuration files
+auth.ini
+redpen.ini
