@@ -3,11 +3,14 @@
 
 import configparser
 import json
-import os
+import sqlite3
 import subprocess
+
+import os
 from flask import Flask, render_template, session, request, redirect, jsonify
 from ldap3 import Server, Connection, AUTH_SIMPLE, STRATEGY_SYNC, GET_ALL_INFO, LDAPBindError
 from werkzeug import utils
+from werkzeug.security import check_password_hash
 
 app = Flask(__name__)
 app.debug = False
@@ -54,6 +57,15 @@ def is_account_valid():
                        password=request.form['password'], authentication=AUTH_SIMPLE, check_names=True)
             return True
         except LDAPBindError:
+            return False
+    elif config['auth']['method'] == 'normal':
+        con = sqlite3.connect('./WebTeX.db')
+        cur = con.cursor()
+        cur.execute('SELECT password FROM user WHERE username=?', username)
+        hashedpass = cur.fetchone()[0]
+        if check_password_hash(hashedpass, request.form['password']):
+            return True
+        else:
             return False
 
 
