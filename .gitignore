@@ -17,3 +17,6 @@ pip-selfcheck.json
 # WebTeX configuration files
 auth.ini
 redpen.ini
+
+# WebTeX database
+WebTeX.db
