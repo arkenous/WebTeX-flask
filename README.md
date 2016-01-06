@@ -9,6 +9,11 @@ This application using [Flask](https://github.com/mitsuhiko/flask "https://githu
 
 Default account is **Admin** and password is **webtex**
 
+## TODO
+- Full implement authentication method
+- Implement preference page
+- Add installation guide to README.md
+
 ## Requirements
 - Python 3.x
   - [Flask](https://github.com/mitsuhiko/flask "https://github.com/mitsuhiko/flask")
