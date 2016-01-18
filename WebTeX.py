@@ -44,13 +44,14 @@ def login():
 def is_account_valid():
     username = request.form['username']
     config = configparser.ConfigParser()
-    config.read('auth.ini')
-    server = config['ldap']['server']
-    port = int(config['ldap']['port'])
-    base_dn = config['ldap']['base_dn']
-    user_dn = 'uid=' + username + ',' + base_dn
+    config.read(os.path.dirname(os.path.abspath(__file__)) + '/auth.ini')
 
     if config['auth']['method'] == 'ldap':
+        server = config['ldap']['server']
+        port = int(config['ldap']['port'])
+        base_dn = config['ldap']['base_dn']
+        user_dn = 'uid=' + username + ',' + base_dn
+
         s = Server(server, port=port, get_info=GET_ALL_INFO)
         try:
             Connection(s, auto_bind=True, client_strategy=STRATEGY_SYNC, user=user_dn,
@@ -59,10 +60,13 @@ def is_account_valid():
         except LDAPBindError:
             return False
     elif config['auth']['method'] == 'normal':
-        con = sqlite3.connect('./WebTeX.db')
+        con = sqlite3.connect(os.path.dirname(os.path.abspath(__file__)) + '/WebTeX.db')
         cur = con.cursor()
-        cur.execute('SELECT password FROM user WHERE username=?', username)
-        hashedpass = cur.fetchone()[0]
+        cur.execute('SELECT password FROM user WHERE username=(?)', (username,))
+        fetched = cur.fetchone()
+        if fetched is None:
+            return False
+        hashedpass = fetched[0]
         if check_password_hash(hashedpass, request.form['password']):
             return True
         else:
