@@ -20,3 +20,6 @@ redpen.ini
 
 # WebTeX database
 WebTeX.db
+
+# WebTeX Storage
+static/storage
