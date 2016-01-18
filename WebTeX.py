@@ -172,7 +172,7 @@ def compile_tex():
                                       'document.dvi']).splitlines()
     if os.path.exists('document.pdf'):
         config = configparser.ConfigParser()
-        config.read('redpen.ini')
+        config.read(os.path.dirname(os.path.abspath(__file__)) + '/redpen.ini')
         os.environ['JAVA_HOME'] = config['redpen']['JAVA_HOME']
         subprocess.call(['pdftotext', 'document.pdf', 'document.txt'])
         redpen = subprocess.Popen(['redpen', '-c', config['redpen']['conf'], 'document.txt'], stdout=subprocess.PIPE,
