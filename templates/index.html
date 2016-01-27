@@ -24,31 +24,25 @@
     </div> <!-- navbar-header -->
     <ul class="nav navbar-nav">
       <li class="dropdown">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-           aria-expanded="false">Directory list <span class="caret"></span></a>
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Directory list <span class="caret"></span></a>
         <ul class="dropdown-menu" id="directorylist">
           <li><a href="#createDirectoryModal" data-toggle="modal">Create directory</a></li>
           <li role="separator" class="divider"></li>
         </ul>
       </li> <!-- dropdown -->
       <li class="dropdown">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-           aria-expanded="false">File list <span class="caret"></span></a>
-        <ul class="dropdown-menu" id="filelist">
-        </ul>
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">File list <span class="caret"></span></a>
+        <ul class="dropdown-menu" id="filelist"></ul>
       </li> <!-- dropdown -->
       <li><a href="#" id="compile">Compile</a></li>
       <li class="dropdown">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-           aria-expanded="false">Download <span class="caret"></span></a>
-        <ul class="dropdown-menu" id="download">
-        </ul>
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Download <span class="caret"></span></a>
+        <ul class="dropdown-menu" id="download"></ul>
       </li> <!-- dropdown -->
       <li><p class="navbar-text">CWD: <a href="#" class="navbar-link" id="cwd"></a></p></li>
     </ul> <!-- nav navbar-nav -->
     <ul class="nav navbar-nav navbar-right">
-      <li><p class="navbar-text">Signed in as: <a href="#" class="navbar-link" id="username">{{ session.username }}</a>
-      </p>
+      <li><p class="navbar-text">Signed in as: <a href="#" class="navbar-link" id="username">{{ session.username }}</a></p></li>
       <li><a href="/logout" id="logout">Logout</a></li>
     </ul>
   </div> <!-- container-fluid -->
@@ -63,8 +57,7 @@
     <div class="col-sm-12 col-md-12" id="main">
       <div class="row">
         <div class="col-sm-6 col-md-6" id="editor"></div>
-        <div class="col-sm-6 col-md-6" id="preview">
-        </div> <!-- preview -->
+        <div class="col-sm-6 col-md-6" id="preview"></div>
       </div> <!-- row -->
       <div class="row">
         <div class="col-sm-6 col-md-6">
@@ -72,8 +65,7 @@
             <div class="accordion-group">
               <div class="accordion-heading">
                 <div class="btn-group btn-group-justified" role="group" aria-label="...">
-                  <a class="accordion-toggle btn btn-info" data-toggle="collapse" data-parent="#result"
-                     href="#result-body">Result</a>
+                  <a class="accordion-toggle btn btn-info" data-toggle="collapse" data-parent="#result" href="#result-body">Result</a>
                 </div>
               </div>
               <div id="result-body" class="accordion-body collapse">
@@ -88,13 +80,12 @@
             </div>
           </div>
         </div> <!-- col-sm-6 col-md-6 -->
-        <div class="col-sm-6 col-md-6" id="redpen">
+        <div class="col-sm-6 col-md-6">
           <div class="accordion" id="redpen">
             <div class="accordion-group">
               <div class="accordion-heading">
                 <div class="btn-group btn-group-justified" role="group" aria-label="...">
-                  <a class="accordion-toggle btn btn-danger" data-toggle="collapse" data-parent="#redpen"
-                     href="#redpen-body">RedPen</a>
+                  <a class="accordion-toggle btn btn-danger" data-toggle="collapse" data-parent="#redpen" href="#redpen-body">RedPen</a>
                 </div>
               </div>
               <div id="redpen-body" class="accordion-body collapse">
@@ -128,8 +119,7 @@
         <input type="text" class="directoryName" id="directoryName" placeholder="Report">
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" id="createDirectory" data-dismiss="modal" aria-hidden="true">作成
-        </button>
+        <button type="button" class="btn btn-primary" id="createDirectory" data-dismiss="modal" aria-hidden="true">作成</button>
         <button type="button" class="btn btn-danger" data-dismiss="modal" aria-hidden="true">キャンセル</button>
       </div>
     </div>
@@ -150,8 +140,7 @@
             <input type="file" class="form-control" name="file" aria-describedby="upload_desc"/>
           </div>
           <div class="form-group">
-            <button class="btn btn-primary btn-block" data-dismiss="modal" aria-hidden="true" id="upload">Upload
-            </button>
+            <button class="btn btn-primary btn-block" data-dismiss="modal" aria-hidden="true" id="upload">Upload</button>
           </div>
         </form>
       </div>
