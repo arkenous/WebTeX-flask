@@ -44,7 +44,7 @@ def login():
 def is_account_valid():
     username = request.form['username']
     config = configparser.ConfigParser()
-    config.read(os.path.dirname(os.path.abspath(__file__)) + '/auth.ini')
+    config.read(os.path.dirname(os.path.abspath(__file__)) + '/WebTeX.ini')
 
     if config['auth']['method'] == 'ldap':
         server = config['ldap']['server']
@@ -59,7 +59,7 @@ def is_account_valid():
             return True
         except LDAPBindError:
             return False
-    elif config['auth']['method'] == 'normal':
+    elif config['auth']['method'] == 'local':
         con = sqlite3.connect(os.path.dirname(os.path.abspath(__file__)) + '/WebTeX.db')
         cur = con.cursor()
         cur.execute('SELECT password FROM user WHERE username=(?)', (username,))
@@ -172,8 +172,8 @@ def compile_tex():
                                       'document.dvi']).splitlines()
     if os.path.exists('document.pdf'):
         config = configparser.ConfigParser()
-        config.read(os.path.dirname(os.path.abspath(__file__)) + '/redpen.ini')
-        os.environ['JAVA_HOME'] = config['redpen']['JAVA_HOME']
+        config.read(os.path.dirname(os.path.abspath(__file__)) + '/WebTeX.ini')
+        os.environ['JAVA_HOME'] = config['redpen']['java_home']
         subprocess.call(['pdftotext', 'document.pdf', 'document.txt'])
         redpen = subprocess.Popen(['redpen', '-c', config['redpen']['conf'], 'document.txt'], stdout=subprocess.PIPE,
                                   stderr=subprocess.PIPE).communicate()
