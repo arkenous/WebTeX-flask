@@ -1,4 +1,7 @@
 # WebTeX
+[![Build Status](https://travis-ci.org/trileg/WebTeX.svg?branch=master)](https://travis-ci.org/trileg/WebTeX)
+[![Coverage Status](https://coveralls.io/repos/github/trileg/WebTeX/badge.svg?branch=master)](https://coveralls.io/github/trileg/WebTeX?branch=master)
+
 Web-based LaTeX editor and compiler.
 This application using [Flask](https://github.com/mitsuhiko/flask "https://github.com/mitsuhiko/flask").
 
@@ -8,11 +11,6 @@ This application using [Flask](https://github.com/mitsuhiko/flask "https://githu
 - Automatic correction (using [RedPen](https://github.com/redpen-cc/redpen/ "https://github.com/redpen-cc/redpen/"))
 
 Default account is **Admin** and password is **webtex**
-
-## TODO
-- Full implement authentication method
-- Implement preference page
-- Add installation guide to README.md
 
 ## Requirements
 - Python 3.x
