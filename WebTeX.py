@@ -8,7 +8,8 @@ import subprocess
 
 import os
 from flask import Flask, render_template, session, request, redirect, jsonify
-from ldap3 import Server, Connection, AUTH_SIMPLE, STRATEGY_SYNC, GET_ALL_INFO, LDAPBindError
+from ldap3 import Server, Connection, \
+    AUTH_SIMPLE, STRATEGY_SYNC, GET_ALL_INFO, LDAPBindError
 from werkzeug import utils
 from werkzeug.security import check_password_hash
 
@@ -17,6 +18,9 @@ app.debug = False
 app.config['SECRET_KEY'] = os.urandom(24)
 
 base = os.path.dirname(os.path.abspath(__file__))
+conf = base + '/WebTeX.ini'
+db = base + '/WebTeX.db'
+storage = base + '/static/storage/'
 
 
 @app.before_request
@@ -44,7 +48,7 @@ def login():
 def is_account_valid():
     username = request.form['username']
     config = configparser.ConfigParser()
-    config.read(os.path.dirname(os.path.abspath(__file__)) + '/WebTeX.ini')
+    config.read(conf)
 
     if config['auth']['method'] == 'ldap':
         server = config['ldap']['server']
@@ -54,13 +58,14 @@ def is_account_valid():
 
         s = Server(server, port=port, get_info=GET_ALL_INFO)
         try:
-            Connection(s, auto_bind=True, client_strategy=STRATEGY_SYNC, user=user_dn,
-                       password=request.form['password'], authentication=AUTH_SIMPLE, check_names=True)
+            Connection(s, auto_bind=True, client_strategy=STRATEGY_SYNC,
+                       user=user_dn, password=request.form['password'],
+                       authentication=AUTH_SIMPLE, check_names=True)
             return True
         except LDAPBindError:
             return False
     elif config['auth']['method'] == 'local':
-        con = sqlite3.connect(os.path.dirname(os.path.abspath(__file__)) + '/WebTeX.db')
+        con = sqlite3.connect(db)
         cur = con.cursor()
         cur.execute('SELECT password FROM user WHERE username=(?)', (username,))
         fetched = cur.fetchone()
@@ -81,109 +86,118 @@ def logout():
 
 @app.route('/readDirectory', methods=['POST'])
 def read_directory():
-    storage_path = base+'/static/storage'
-    if not os.path.exists(storage_path) or not os.path.isdir(storage_path):
-        os.mkdir(storage_path)
+    dictionary = {}
+    if not os.path.exists(storage) or not os.path.isdir(storage):
+        os.mkdir(storage)
 
-    user_dirpath = storage_path+'/'+session.get('username')
-    if os.path.exists(user_dirpath) and os.path.isdir(user_dirpath):
-        directory_list = os.listdir(user_dirpath)
-        dictionary = {'name': directory_list}
-        return jsonify(ResultSet=json.dumps(dictionary))
+    user_storage = storage + session['username']
+    if os.path.exists(user_storage) and os.path.isdir(user_storage):
+        dictionary['name'] = os.listdir(user_storage)
     else:
-        os.mkdir(user_dirpath)
-        dictionary = {'name': ''}
-        return jsonify(ResultSet=json.dumps(dictionary))
+        os.mkdir(user_storage)
+        dictionary['name'] = ''
+
+    return jsonify(ResultSet=json.dumps(dictionary))
 
 
 @app.route('/createDirectory', methods=['POST'])
 def create_directory():
-    dir_path = base + '/static/storage/' + session.get('username') + '/' + request.json['name']
-    os.mkdir(dir_path)
+    project_storage = storage + session['username'] + '/' + request.json['name']
+    os.mkdir(project_storage)
     return jsonify()
 
 
 @app.route('/setDirectory', methods=['POST'])
 def set_directory():
-    session['cwd'] = base + '/static/storage/' + session.get('username') + '/' + request.json['name']
+    dictionary = {}
+    session['cwd'] = storage + session['username'] + '/' + request.json['name']
     os.chdir(session.get('cwd'))
-    if os.path.exists(session.get('cwd')) and os.path.isdir(session.get('cwd')):
+    if os.path.exists(session['cwd']) and os.path.isdir(session['cwd']):
+        dictionary['result'] = 'Success'
         # if document.tex exist, read it.
-        if os.path.exists(session.get('cwd') + '/document.tex'):
-            text = open(session.get('cwd') + '/document.tex').read()
-            dictionary = {'result': 'Success', 'exist': 'True', 'text': text}
-            return jsonify(ResultSet=json.dumps(dictionary))
+        if os.path.exists(session['cwd'] + '/document.tex'):
+            text = open(session['cwd'] + '/document.tex').read()
+            dictionary['exist'] = 'True'
+            dictionary['text'] = text
         else:
-            dictionary = {'result': 'Success', 'exist': 'False'}
-            return jsonify(ResultSet=json.dumps(dictionary))
+            dictionary['exist'] = 'False'
     else:
         session['cwd'] = ''
         dictionary = {'result': 'Failure'}
-        return jsonify(ResultSet=json.dumps(dictionary))
+
+    return jsonify(ResultSet=json.dumps(dictionary))
 
 
 @app.route('/readFilelist', methods=['POST'])
 def read_filelist():
-    if session.get('cwd') == '':
-        dictionary = {'result': 'Failure'}
-        return jsonify(ResultSet=json.dumps(dictionary))
-    filelist = os.listdir(session.get('cwd'))
-    username = session.get('username')
-    if os.path.exists(os.path.join(session.get('cwd'), 'document.tex')):
-        if os.path.exists(os.path.join(session.get('cwd'), 'document.pdf')):
-            dictionary = {'result': 'Success', 'list': filelist, 'username': username, 'tex': 'True', 'pdf': 'True'}
-        else:
-            dictionary = {'result': 'Success', 'list': filelist, 'username': username, 'tex': 'True', 'pdf': 'False'}
+    dictionary = {}
+    if session.get('cwd') == '' or session.get('cwd') is None:
+        dictionary['result'] = 'Failure'
     else:
-        dictionary = {'result': 'Success', 'list': filelist, 'username': username, 'tex': 'False', 'pdf': 'False'}
+        dictionary['result'] = 'Success'
+        dictionary['list'] = os.listdir(session['cwd'])
+        dictionary['username'] = session['username']
+        if os.path.exists(os.path.join(session['cwd'], 'document.tex')):
+            dictionary['tex'] = 'True'
+            if os.path.exists(os.path.join(session['cwd'], 'document.pdf')):
+                dictionary['pdf'] = 'True'
+            else:
+                dictionary['pdf'] = 'False'
+        else:
+            dictionary['tex'] = 'False'
 
     return jsonify(ResultSet=json.dumps(dictionary))
 
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
-    if session.get('cwd') != '':
+    dictionary = {}
+    if session.get('cwd') == '' or session.get('cwd') is None:
+        dictionary['result'] = 'Failure'
+    else:
         file = request.files['file']
         if file:
             filename = utils.secure_filename(file.filename)
             file.save(os.path.join(session.get('cwd'), filename))
-            dictionary = {'result': 'Success'}
+            dictionary['result'] = 'Success'
         else:
-            dictionary = {'result': 'Failure'}
-    else:
-        dictionary = {'result': 'Failure'}
+            dictionary['result'] = 'Failure'
 
     return jsonify(ResultSet=json.dumps(dictionary))
 
 
 @app.route('/compile', methods=['POST'])
 def compile_tex():
-    if session.get('cwd') == '':
-        dictionary = {'result': 'Failure'}
-        return jsonify(ResultSet=json.dumps(dictionary))
-    text = request.json['text']
-    os.chdir(session.get('cwd'))
-    f = open('document.tex', 'w')
-    f.write(text)
-    f.close()
-
-    texlog = subprocess.check_output(['platex', '-halt-on-error', '-interaction=nonstopmode', '-file-line-error',
-                                      '-no-shell-escape', 'document.tex', '&&', 'dvipdfmx',
-                                      'document.dvi']).splitlines()
-    if os.path.exists('document.pdf'):
-        config = configparser.ConfigParser()
-        config.read(os.path.dirname(os.path.abspath(__file__)) + '/WebTeX.ini')
-        os.environ['JAVA_HOME'] = config['redpen']['java_home']
-        subprocess.call(['pdftotext', 'document.pdf', 'document.txt'])
-        redpen = subprocess.Popen(['redpen', '-c', config['redpen']['conf'], 'document.txt'], stdout=subprocess.PIPE,
-                                  stderr=subprocess.PIPE).communicate()
-        redpenout = redpen[0].splitlines()
-        redpenerr = redpen[1].splitlines()
-
-        dictionary = {'result': 'Success', 'redpenout': redpenout, 'redpenerr': redpenerr, 'texlog': texlog,
-                      'existpdf': 'True', 'user': session.get('username')}
+    dictionary = {}
+    if session.get('cwd') == '' or session.get('cwd') is None:
+        dictionary['result'] = 'Failure'
     else:
-        dictionary = {'result': 'Success', 'texlog': texlog, 'existpdf': 'False'}
+        dictionary['result'] = 'Success'
+        text = request.json['text']
+        os.chdir(session['cwd'])
+        f = open('document.tex', 'w')
+        f.write(text)
+        f.close()
+
+        dictionary['texlog'] = subprocess.check_output(
+                ['platex', '-halt-on-error', '-interaction=nonstopmode',
+                 '-file-line-error', '-no-shell-escape', 'document.tex', '&&',
+                 'dvipdfmx', 'document.dvi']).splitlines()
+        if os.path.exists('document.pdf'):
+            dictionary['existpdf'] = 'True'
+            dictionary['user'] = session['username']
+            config = configparser.ConfigParser()
+            config.read(conf)
+            os.environ['JAVA_HOME'] = config['redpen']['java_home']
+            subprocess.call(['pdftotext', 'document.pdf', 'document.txt'])
+            redpen = subprocess.Popen(
+                    ['redpen', '-c', config['redpen']['conf'], 'document.txt'],
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE).communicate()
+            dictionary['redpenout'] = redpen[0].splitlines()
+            dictionary['redpenerr'] = redpen[1].splitlines()
+        else:
+            dictionary['existpdf'] = 'False'
 
     return jsonify(ResultSet=json.dumps(dictionary))
 
