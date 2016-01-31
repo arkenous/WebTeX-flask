@@ -67,7 +67,8 @@ def is_account_valid():
     elif config['auth']['method'] == 'local':
         con = sqlite3.connect(db)
         cur = con.cursor()
-        cur.execute('SELECT password FROM user WHERE username=(?)', (username,))
+        sql = 'SELECT password FROM user WHERE username=(?)'
+        cur.execute(sql, (username,))
         fetched = cur.fetchone()
         if fetched is None:
             return False
@@ -102,8 +103,8 @@ def read_directory():
 
 @app.route('/createDirectory', methods=['POST'])
 def create_directory():
-    project_storage = storage + session['username'] + '/' + request.json['name']
-    os.mkdir(project_storage)
+    project = storage + session['username'] + '/' + request.json['name']
+    os.mkdir(project)
     return jsonify()
 
 
