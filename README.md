@@ -1,5 +1,6 @@
 # WebTeX
 [![Build Status](https://travis-ci.org/trileg/WebTeX.svg?branch=master)](https://travis-ci.org/trileg/WebTeX)
+[![Coverage Status](https://coveralls.io/repos/github/trileg/WebTeX/badge.svg?branch=master)](https://coveralls.io/github/trileg/WebTeX?branch=master)
 
 Web-based LaTeX editor and compiler.
 This application using [Flask](https://github.com/mitsuhiko/flask "https://github.com/mitsuhiko/flask").
