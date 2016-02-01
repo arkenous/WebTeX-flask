@@ -25,6 +25,3 @@ WebTeX.db
 
 # WebTeX Storage
 static/storage
-
-# Ignore ace.js
-static/ace-builds
