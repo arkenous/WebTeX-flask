@@ -183,7 +183,7 @@ def compile_tex():
         dictionary['texlog'] = subprocess.check_output(
                 ['platex', '-halt-on-error', '-interaction=nonstopmode',
                  '-file-line-error', '-no-shell-escape', 'document.tex', '&&',
-                 'dvipdfmx', 'document.dvi']).splitlines()
+                 'dvipdfmx', 'document.dvi']).decode('utf-8').splitlines()
         if os.path.exists('document.pdf'):
             dictionary['existpdf'] = 'True'
             dictionary['user'] = session['username']
@@ -195,8 +195,8 @@ def compile_tex():
                     ['redpen', '-c', config['redpen']['conf'], 'document.txt'],
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE).communicate()
-            dictionary['redpenout'] = redpen[0].splitlines()
-            dictionary['redpenerr'] = redpen[1].splitlines()
+            dictionary['redpenout'] = redpen[0].decode('utf-8').splitlines()
+            dictionary['redpenerr'] = redpen[1].decode('utf-8').splitlines()
         else:
             dictionary['existpdf'] = 'False'
 
