@@ -8,6 +8,9 @@
 # OSX metadata file
 .DS_Store
 
+# Files related nodetests
+man
+
 # virtualenv related
 bin
 include
