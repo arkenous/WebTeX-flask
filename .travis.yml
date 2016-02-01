@@ -5,7 +5,7 @@ python:
 addons:
   apt:
     packages:
-      - texlive-lang-all
+      - texlive-lang-cjk
       - oracle-java8-installer
 install:
   - "pip install -r pip-requirements.txt"
