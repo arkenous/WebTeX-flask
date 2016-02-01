@@ -34,3 +34,21 @@ def test_login():
     })
     eq_(302, res.status_code)
     eq_('http://localhost/', res.headers['Location'])
+
+
+def test_logout():
+    with client.session_transaction() as sess:
+        eq_(sess['username'], 'Admin')
+    res = client.get('/logout')
+    with client.session_transaction() as sess:
+        eq_(sess, {})
+    eq_(302, res.status_code)
+    eq_('http://localhost/login', res.headers['Location'])
+
+
+def test_get_index_after_logout():
+    with client.session_transaction() as sess:
+        eq_(sess, {})
+    res = client.get('/')
+    eq_(302, res.status_code)
+    eq_('http://localhost/login', res.headers['Location'])
