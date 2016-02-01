@@ -2,8 +2,18 @@ language: python
 python:
   - "3.5"
   - "3.4"
+addons:
+  apt:
+    packages:
+      - texlive-lang-all
+      - oracle-java8-installer
 install:
   - "pip install -r pip-requirements.txt"
   - "pip install coveralls"
+before_script:
+  - wget https://github.com/redpen-cc/redpen/releases/download/redpen-1.4.3/redpen-1.4.3.tar.gz -O /tmp/redpen.tar.gz
+  - mkdir redpen
+  - tar -xvf /tmp/redpen.tar.gz -C redpen --strip-components 1
+  - export PATH=$PATH:$PWD/redpen/bin/
 script: nosetests --with-coverage --cover-package=WebTeX.py
 after_success: coveralls --rcfile=.coveragerc
