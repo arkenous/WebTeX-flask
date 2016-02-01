@@ -8,7 +8,7 @@
 # OSX metadata file
 .DS_Store
 
-# Files related nodetests
+# Files related nosetests
 man
 
 # virtualenv related
