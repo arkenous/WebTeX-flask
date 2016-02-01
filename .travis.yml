@@ -5,5 +5,5 @@ python:
 install:
   - "pip install -r pip-requirements.txt"
   - "pip install coveralls"
-script: nosetests --with-coverage
-after_success: coveralls
+script: nosetests --with-coverage --cover-package=WebTeX.py
+after_success: coveralls --rcfile=.coveragerc
