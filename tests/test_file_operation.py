@@ -14,6 +14,7 @@ conf_path = os.path.dirname(os.path.abspath(__file__)) + '/../WebTeX.ini'
 redpen_conf_path = os.path.expanduser('~/redpen/conf/redpen-conf-en.xml')
 java_home = '/usr/lib/jvm/java-8-oracle'
 
+
 def test_login():
     res = client.post('/login', data={
         'username': 'Admin',
