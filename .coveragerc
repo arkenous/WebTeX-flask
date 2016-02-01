@@ -5,3 +5,5 @@ source = WebTeX.py
 omit = */static/*, */templates/*, */tests/*
 exclude_lines=
   if __name__ == '__main__':
+  def before_request():
+  @app.before_request
