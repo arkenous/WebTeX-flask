@@ -4,20 +4,10 @@ source = WebTeX.py
 [report]
 omit = */static/*, */templates/*, */tests/*
 exclude_lines=
-  import configparser
-  import json
-  import sqlite3
-  import subprocess
   if __name__ == '__main__':
   app.run(host='0.0.0.0', port=8080, threaded=True)
   def before_request():
   @app.before_request
-  import os
-  from flask import Flask, render_template, session, request, redirect, jsonify
-  from ldap3 import Server, Connection, \
-  AUTH_SIMPLE, STRATEGY_SYNC, GET_ALL_INFO, LDAPBindError
-  from werkzeug import utils
-  from werkzeug.security import check_password_hash
   app = Flask(__name__)
   app.debug = False
   app.config['SECRET_KEY'] = os.urandom(24)
