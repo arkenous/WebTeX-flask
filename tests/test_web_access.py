@@ -3,9 +3,12 @@
 
 from nose.tools import eq_
 import WebTeX
+import os
+from configparser import ConfigParser
 
 WebTeX.app.testing = True
 client = WebTeX.app.test_client()
+conf_path = os.path.dirname(os.path.abspath(__file__)) + '/../WebTeX.ini'
 
 
 def test_get_index():
@@ -27,7 +30,13 @@ def test_fail_login():
     eq_(200, res.status_code)
 
 
-def test_login():
+def test_login_local():
+    config = ConfigParser()
+    config.read(conf_path)
+    config['auth']['method'] = 'local'
+    with open(conf_path, 'w') as configfile:
+        config.write(configfile)
+
     res = client.post('/login', data={
         'username': 'Admin',
         'password': 'webtex'
@@ -36,9 +45,37 @@ def test_login():
     eq_('http://localhost/', res.headers['Location'])
 
 
-def test_logout():
+def test_logout_local():
     with client.session_transaction() as sess:
         eq_(sess['username'], 'Admin')
+    res = client.get('/logout')
+    with client.session_transaction() as sess:
+        eq_(sess, {})
+    eq_(302, res.status_code)
+    eq_('http://localhost/login', res.headers['Location'])
+
+
+def test_login_ldap():
+    config = ConfigParser()
+    config.read(conf_path)
+    config['auth']['method'] = 'ldap'
+    config['ldap']['server'] = 'ldap.forumsys.com'
+    config['ldap']['port'] = '389'
+    config['ldap']['base_dn'] = 'dc=example,dc=com'
+    with open(conf_path, 'w') as configfile:
+        config.write(configfile)
+
+    res = client.post('/login', data={
+        'username': 'tesla',
+        'password': 'password'
+    })
+    eq_(302, res.status_code)
+    eq_('http://localhost/', res.headers['Location'])
+
+
+def test_logout_ldap():
+    with client.session_transaction() as sess:
+        eq_(sess['username'], 'tesla')
     res = client.get('/logout')
     with client.session_transaction() as sess:
         eq_(sess, {})
