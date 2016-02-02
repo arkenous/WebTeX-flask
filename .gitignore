@@ -18,7 +18,7 @@ lib
 pip-selfcheck.json
 
 # WebTeX configuration files
-WebTeX.ini
+#WebTeX.ini
 
 # WebTeX database
 WebTeX.db
