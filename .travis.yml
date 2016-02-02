@@ -8,8 +8,7 @@ python:
   - "3.4"
 
 before_install:
-  - sudo sed -i 's/us-central1.gce/us-central1.gce.clouds/' /etc/apt/sources.list && sudo apt-get -qq update
-  - sudo apt-add-repository ppa:webupd8team/java -y
+  - sudo sed -i 's/us-central1.gce/us-central1.gce.clouds/' /etc/apt/sources.list
   - sudo apt-get -qq update
   - sudo apt-get install -y texlive-lang-cjk oracle-java8-installer
 
