@@ -5,6 +5,7 @@ from nose.tools import eq_
 import WebTeX
 import os
 from configparser import ConfigParser
+import random
 
 WebTeX.app.testing = True
 client = WebTeX.app.test_client()
@@ -65,8 +66,11 @@ def test_login_ldap():
     with open(conf_path, 'w') as configfile:
         config.write(configfile)
 
+    userlist = ['riemann', 'gauss', 'euler', 'euclid',
+                'einstein', 'newton', 'galieleo', 'tesla']
+    username = random.choice(userlist)
     res = client.post('/login', data={
-        'username': 'tesla',
+        'username': username,
         'password': 'password'
     })
     eq_(302, res.status_code)
