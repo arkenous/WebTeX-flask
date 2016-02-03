@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from nose.tools import eq_
+from nose.tools import eq_, ok_
 import WebTeX
 import os
 from configparser import ConfigParser
@@ -10,6 +10,8 @@ import random
 WebTeX.app.testing = True
 client = WebTeX.app.test_client()
 conf_path = os.path.dirname(os.path.abspath(__file__)) + '/../WebTeX.ini'
+ldap_userlist = ['riemann', 'gauss', 'euler', 'euclid',
+                 'einstein', 'newton', 'galieleo', 'tesla']
 
 
 def test_get_index():
@@ -66,9 +68,7 @@ def test_login_ldap():
     with open(conf_path, 'w') as configfile:
         config.write(configfile)
 
-    userlist = ['riemann', 'gauss', 'euler', 'euclid',
-                'einstein', 'newton', 'galieleo', 'tesla']
-    username = random.choice(userlist)
+    username = random.choice(ldap_userlist)
     res = client.post('/login', data={
         'username': username,
         'password': 'password'
@@ -79,7 +79,7 @@ def test_login_ldap():
 
 def test_logout_ldap():
     with client.session_transaction() as sess:
-        eq_(sess['username'], 'tesla')
+        ok_(sess['username'] in ldap_userlist)
     res = client.get('/logout')
     with client.session_transaction() as sess:
         eq_(sess, {})
