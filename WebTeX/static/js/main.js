@@ -235,7 +235,7 @@ function compile() {
             }
 
             var user = JSON.parse(data.ResultSet).user;
-            var pdfpath = "static/storage/" + user + "/" + cwd + "/document.pdf"
+            var pdfpath = "../static/storage/" + user + "/" + cwd + "/document.pdf"
             // コンパイルするたびに最新のものを表示させたいので，pdfパスの後ろに?から始まるユニークな文字列を付ける
             // これをしないと，キャッシュのせいか，PDFファイルの表示が更新されない
             var timestamp = new Date().getTime();

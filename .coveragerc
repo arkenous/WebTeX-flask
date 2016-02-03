@@ -1,5 +1,5 @@
 [run]
-source = WebTeX.py
+source = WebTeX
 
 [report]
 exclude_lines=
