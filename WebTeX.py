@@ -182,8 +182,10 @@ def compile_tex():
 
         dictionary['texlog'] = subprocess.check_output(
                 ['platex', '-halt-on-error', '-interaction=nonstopmode',
-                 '-file-line-error', '-no-shell-escape', 'document.tex', '&&',
-                 'dvipdfmx', 'document.dvi']).decode('utf-8').splitlines()
+                 '-file-line-error', '-no-shell-escape', 'document.tex'
+                 ]).decode('utf-8').splitlines()
+        subprocess.check_output(
+                ['dvipdfmx', 'document.dvi']).decode('utf-8').splitlines()
         if os.path.exists('document.pdf'):
             dictionary['existpdf'] = 'True'
             dictionary['user'] = session['username']
