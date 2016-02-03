@@ -10,7 +10,7 @@ python:
 before_install:
   - sudo sed -i 's/us-central1.gce/us-central1.gce.clouds/' /etc/apt/sources.list
   - sudo apt-get -qq update
-  - sudo apt-get install -y texlive-lang-cjk oracle-java8-installer
+  - sudo apt-get install -y texlive-lang-cjk oracle-java8-installer poppler-utils
 
 install:
   - "pip install -r pip-requirements.txt"
