@@ -106,7 +106,6 @@ def test_login_ldap():
 def test_get_index_after_login():
     res = client.get('/')
     eq_(200, res.status_code)
-    eq_('http://localhost/', res.headers['Location'])
 
 
 def test_logout_ldap():
