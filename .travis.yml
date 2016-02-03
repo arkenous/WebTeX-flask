@@ -28,6 +28,6 @@ before_script:
   - export PATH=$PATH:$PWD/redpen/bin/
   - python WebTeX.py &
 
-script: nosetests --with-coverage
+script: nosetests --with-coverage --cover-package=WebTeX.py
 
 after_success: coveralls --rcfile=.coveragerc
