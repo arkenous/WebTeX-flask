@@ -27,7 +27,7 @@ pip-selfcheck.json
 storage/
 
 # Ace
-ace-builds/
+#../../Desktop/ace-builds/
 
 # Selenium
 selenium/

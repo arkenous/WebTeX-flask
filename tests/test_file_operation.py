@@ -2,15 +2,16 @@
 # -*- coding: utf-8 -*-
 
 from nose.tools import eq_, ok_
-import WebTeX
 import os
+from WebTeX import app
 import json
 from io import BytesIO
 from configparser import ConfigParser
 
-WebTeX.app.testing = True
-client = WebTeX.app.test_client()
-conf_path = os.path.dirname(os.path.abspath(__file__)) + '/../WebTeX.ini'
+app.testing = True
+client = app.app.test_client()
+webtex_path = os.path.dirname(os.path.abspath(__file__)) + '/../WebTeX/'
+conf_path = webtex_path + 'WebTeX.ini'
 redpen_conf_path = os.path.expanduser('~/redpen/conf/redpen-conf-en.xml')
 java_home = '/usr/lib/jvm/java-8-oracle'
 

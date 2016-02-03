@@ -2,14 +2,15 @@
 # -*- coding: utf-8 -*-
 
 from nose.tools import eq_, ok_
-import WebTeX
+from WebTeX import app
 import os
 from configparser import ConfigParser
 import random
 
-WebTeX.app.testing = True
-client = WebTeX.app.test_client()
-conf_path = os.path.dirname(os.path.abspath(__file__)) + '/../WebTeX.ini'
+app.testing = True
+client = app.app.test_client()
+webtex_path = os.path.dirname(os.path.abspath(__file__)) + '/../WebTeX/'
+conf_path = webtex_path + 'WebTeX.ini'
 ldap_userlist = ['riemann', 'gauss', 'euler', 'euclid',
                  'einstein', 'newton', 'galieleo', 'tesla']
 
