@@ -117,4 +117,5 @@ def test_compile_tex():
     data = json.loads(json.loads(res.data.decode('utf-8'))['ResultSet'])
     eq_(200, res.status_code)
     eq_('Success', data['result'])
+    print(data['texlog'])
     eq_('True', data['existpdf'])
