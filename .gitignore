@@ -28,3 +28,6 @@ static/storage
 
 # Ace
 static/ace-builds
+
+# Selenium
+selenium

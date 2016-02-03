@@ -14,7 +14,7 @@ before_install:
 
 install:
   - "pip install -r pip-requirements.txt"
-  - "pip install coveralls"
+  - "pip install coveralls selenium"
 
 before_script:
   - wget https://github.com/ajaxorg/ace-builds/archive/v1.2.3.tar.gz -O /tmp/ace.tar.gz
@@ -26,6 +26,7 @@ before_script:
   - mkdir redpen
   - tar -xvf /tmp/redpen.tar.gz -C redpen --strip-components 1
   - export PATH=$PATH:$PWD/redpen/bin/
+  - python WebTeX.py &
 
 script: nosetests --with-coverage --cover-package=WebTeX.py
 
