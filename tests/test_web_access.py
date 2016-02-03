@@ -25,10 +25,18 @@ def test_get_login():
     eq_(200, res.status_code)
 
 
-def test_fail_login():
+def test_fail_login_local_invalid_username():
     res = client.post('/login', data={
         'username': 'admin',
         'password': 'webtex'
+    })
+    eq_(200, res.status_code)
+
+
+def test_fail_login_local_invalid_password():
+    res = client.post('/login', data={
+        'username': 'Admin',
+        'password': 'WebTeX'
     })
     eq_(200, res.status_code)
 
@@ -58,6 +66,24 @@ def test_logout_local():
     eq_('http://localhost/login', res.headers['Location'])
 
 
+def test_fail_login_ldap():
+    config = ConfigParser()
+    config.read(conf_path)
+    config['auth']['method'] = 'ldap'
+    config['ldap']['server'] = 'ldap.forumsys.com'
+    config['ldap']['port'] = '389'
+    config['ldap']['base_dn'] = 'dc=example,dc=com'
+    with open(conf_path, 'w') as configfile:
+        config.write(configfile)
+
+    username = 'test'
+    res = client.post('/login', data={
+        'username': username,
+        'password': 'password'
+    })
+    eq_(200, res.status_code)
+
+
 def test_login_ldap():
     config = ConfigParser()
     config.read(conf_path)
@@ -74,6 +100,12 @@ def test_login_ldap():
         'password': 'password'
     })
     eq_(302, res.status_code)
+    eq_('http://localhost/', res.headers['Location'])
+
+
+def test_get_index_after_login():
+    res = client.get('/')
+    eq_(200, res.status_code)
     eq_('http://localhost/', res.headers['Location'])
 
 
