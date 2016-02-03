@@ -16,6 +16,12 @@ java_home = '/usr/lib/jvm/java-8-oracle'
 
 
 def test_login():
+    config = ConfigParser()
+    config.read(conf_path)
+    config['auth']['method'] = 'local'
+    with open(conf_path, 'w') as configfile:
+        config.write(configfile)
+
     res = client.post('/login', data={
         'username': 'Admin',
         'password': 'webtex'
