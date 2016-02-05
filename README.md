@@ -4,7 +4,9 @@
 [![Join the chat at https://gitter.im/trileg/WebTeX](https://badges.gitter.im/trileg/WebTeX.svg)](https://gitter.im/trileg/WebTeX?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 <script src="http://coinwidget.com/widget/coin.js"></script>
+
 <script>
+
 CoinWidgetCom.go({
 	wallet_address: "1CMw6RVEvqLAJnc3RWR4ykajpZwpfAA9Kq"
 	, currency: "bitcoin"
@@ -17,6 +19,7 @@ CoinWidgetCom.go({
 	, lbl_count: "donations"
 	, lbl_amount: "BTC"
 });
+
 </script>
 
 Web-based LaTeX editor and compiler.
