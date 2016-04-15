@@ -4,7 +4,7 @@
 [![Join the chat at https://gitter.im/trileg/WebTeX](https://badges.gitter.im/trileg/WebTeX.svg)](https://gitter.im/trileg/WebTeX?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Web-based LaTeX editor and compiler.
-This application using [Flask](https://github.com/mitsuhiko/flask "https://github.com/mitsuhiko/flask").
+This application use [Flask](https://github.com/mitsuhiko/flask "https://github.com/mitsuhiko/flask").
 
 ## Features
 - Edit, compile and preview LaTeX document on the web
