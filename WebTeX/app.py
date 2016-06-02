@@ -25,11 +25,57 @@ storage = base + '/static/storage/'
 
 @app.before_request
 def before_request():
+    config = configparser.ConfigParser()
+    config.read(conf)
+    initial_setup = config['setup']['initial_setup']
+    if initial_setup == 'true':
+        return redirect('/initialize')
+    if request.path == '/initialize':
+        return redirect('/logout')
     if session.get('username') is not None:
         return
     if request.path == '/login':
         return
     return redirect('/login')
+
+
+@app.route('/initialize')
+def initialize():
+    return render_template('initialize.html')
+
+
+@app.route('/readConfig', methods=['POST'])
+def read_config():
+    dictionary = {}
+    config = configparser.ConfigParser()
+    config.read(conf)
+    dictionary['mode'] = config['auth']['method']
+    dictionary['ldap_address'] = config['ldap']['server']
+    dictionary['ldap_port'] = config['ldap']['port']
+    dictionary['ldap_basedn'] = config['ldap']['base_dn']
+    dictionary['java_home'] = config['redpen']['java_home']
+    dictionary['redpen_conf_path'] = config['redpen']['conf']
+    dictionary['result'] = 'Success'
+    return jsonify(ResultSet=json.dumps(dictionary))
+
+
+@app.route('/saveConfig', methods=['POST'])
+def save_config():
+    dictionary = {}
+    config = configparser.ConfigParser()
+    config.read(conf)
+    config['setup']['initial_setup'] = 'false'
+    config['auth']['method'] = request.json['mode']
+    config['ldap']['server'] = request.json['ldap_address']
+    config['ldap']['port'] = request.json['ldap_port']
+    config['ldap']['basedn'] = request.json['ldap_basedn']
+    config['redpen']['java_home'] = request.json['java_home']
+    config['redpen']['conf'] = request.json['redpen_conf_path']
+    f = open(conf, 'w')
+    config.write(f)
+    f.close()
+    dictionary['result'] = 'Success'
+    return jsonify(ResultSet=json.dumps(dictionary))
 
 
 @app.route('/')
@@ -181,11 +227,11 @@ def compile_tex():
         f.close()
 
         dictionary['texlog'] = subprocess.check_output(
-                ['platex', '-halt-on-error', '-interaction=nonstopmode',
-                 '-file-line-error', '-no-shell-escape', 'document.tex'
-                 ]).decode('utf-8').splitlines()
+            ['platex', '-halt-on-error', '-interaction=nonstopmode',
+             '-file-line-error', '-no-shell-escape', 'document.tex'
+             ]).decode('utf-8').splitlines()
         subprocess.check_output(
-                ['dvipdfmx', 'document.dvi']).decode('utf-8').splitlines()
+            ['dvipdfmx', 'document.dvi']).decode('utf-8').splitlines()
         if os.path.exists('document.pdf'):
             dictionary['existpdf'] = 'True'
             dictionary['user'] = session['username']
@@ -194,9 +240,9 @@ def compile_tex():
             os.environ['JAVA_HOME'] = config['redpen']['java_home']
             subprocess.call(['pdftotext', 'document.pdf', 'document.txt'])
             redpen = subprocess.Popen(
-                    ['redpen', '-c', config['redpen']['conf'], 'document.txt'],
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE).communicate()
+                ['redpen', '-c', config['redpen']['conf'], 'document.txt'],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE).communicate()
             dictionary['redpenout'] = redpen[0].decode('utf-8').splitlines()
             dictionary['redpenerr'] = redpen[1].decode('utf-8').splitlines()
         else:
