@@ -5,7 +5,7 @@ function init() {
   readConfig();
 
   $("input[name='mode']:radio").change(function() {
-    if ($(this).val() == 1) {
+    if ($(this).val() == 'local') {
       $(".ldap").hide("normal");
     } else {
       $(".ldap").show("normal");
@@ -26,7 +26,8 @@ function readConfig() {
     success: function(data) {
       var parsed = JSON.parse(data.ResultSet);
       var result = parsed.result;
-      if (result != "Failure") {
+      if (result == "Success") {
+        $("input[name='mode']:radio").val(parsed.mode);
         $("#ldap_address").val(parsed.ldap_address);
         $("#ldap_port").val(parsed.ldap_port);
         $("#ldap_basedn").val(parsed.ldap_basedn);
@@ -40,6 +41,8 @@ function readConfig() {
 
 
 function saveConfig() {
+  var mode = $("input[name='mode']:radio").val();
+
   var ldap_address = $("#ldap_address").val();
   var ldap_port = $("#ldap_port").val();
   var ldap_basedn = $("#ldap_basedn").val();
@@ -48,6 +51,7 @@ function saveConfig() {
   var redpen_conf_path = $("#redpen_path").val();
 
   var json = JSON.stringify({
+    "mode": mode,
     "ldap_address": ldap_address,
     "ldap_port": ldap_port,
     "ldap_basedn": ldap_basedn,
