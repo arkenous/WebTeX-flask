@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge">
+  <meta content="width=device-width, initial-scale=1" name="viewport">
+  <title>WebTeX</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+  <link rel="stylesheet" href="../static/css/initialize.css">
+</head>
+<body>
+<div class="container=fluid" id="main">
+  <div class="row">
+    <div class="col-sm-12">
+
+      <div class="form-group">
+        <label for="user-name">User name</label>
+        <input type="text" class="form-control" id="user-name" placeholder="Please input your user name">
+      </div>
+      <div class="form-group">
+        <label for="user-password">User password</label>
+        <input type="password" class="form-control" id="user-password" placeholder="Please input your user password">
+      </div>
+
+      <div class="mode">
+        <div class="radio-inline">
+          <input type="radio" value="1" name="mode" id="local_radio" checked>
+          <label for="local_radio">Local authentication</label>
+        </div>
+        <div class="radio-inline">
+          <input type="radio" value="2" name="mode" id="ldap_radio">
+          <label for="ldap_radio">LDAP authentication</label>
+        </div>
+      </div>
+
+      <div class="ldap">
+        <div class="form-group">
+          <label for="ldap_address">LDAP Address</label>
+          <input type="text" class="form-control" id="ldap_address" placeholder="LDAP Address">
+        </div>
+        <div class="form-group">
+          <label for="ldap_port">LDAP Port</label>
+          <input type="number" class="form-control" id="ldap_port" placeholder="LDAP port number">
+        </div>
+        <div class="form-group">
+          <label for="ldap_basedn">LDAP Base DN</label>
+          <input type="text" class="form-control" id="ldap_basedn" placeholder="LDAP Base DN">
+        </div>
+      </div>
+
+      <hr/>
+
+      <div class="form-group">
+        <label for="java_home">JAVA_HOME</label>
+        <input type="text" class="form-control" id="java_home" placeholder="JAVA_HOME">
+      </div>
+
+      <div class="form-group">
+        <label for="redpen_path">Absolute path of RedPen configuration file</label>
+        <input type="text" class="form-control" id="redpen_path" placeholder="Absolute path of RedPen configuration file">
+      </div>
+
+      <div class="btn-group pull-right" role="group" aria-label="OK">
+        <button type="button" class="btn btn-primary btn-lg" id="OK">OK</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+<script src="../static/js/initialize.js"></script>
+</body>
+</html>
