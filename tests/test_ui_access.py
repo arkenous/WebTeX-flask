@@ -7,6 +7,10 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from nose.tools import eq_
 import os
+from configparser import ConfigParser
+
+base = os.path.dirname(os.path.abspath(__file__))
+conf_path = base + '/WebTeX.ini'
 
 
 def test_login_logout():
@@ -54,3 +58,9 @@ def test_login_logout():
     print(driver.current_url)
     eq_('http://localhost:8080/login', driver.current_url)
     driver.close()
+
+    config = ConfigParser()
+    config.read(conf_path)
+    config['setup']['initial_setup'] = 'true'
+    with open(conf_path, 'w') as configfile:
+        config.write(configfile)
