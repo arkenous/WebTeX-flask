@@ -66,6 +66,7 @@ function saveConfig() {
     contentType: 'application/json',
     success: function() {
       console.log("save config succeed");
+      $(location).attr("href", "/login");
     }
   });
   return false;
