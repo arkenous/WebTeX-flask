@@ -28,23 +28,21 @@ def before_request():
     config = configparser.ConfigParser()
     config.read(conf)
     initial_setup = config['setup']['initial_setup']
-    if initial_setup == 'true' and request.path != '/initialize':
-        return redirect('/initialize')
-    elif initial_setup != 'true' and request.path == '/initialize':
-        return redirect('/logout')
-    elif request.path == '/initialize':
+    if initial_setup == 'true' and not (
+            request.path == '/readConfig' or request.path == '/saveConfig'):
+        return render_template('initialize.html')
+    if initial_setup == 'true' and (
+            request.path == '/readConfig' or request.path == '/saveConfig'):
         return
+    if initial_setup == 'false' and (
+            request.path == '/readConfig' or request.path == '/saveConfig'):
+        return redirect('/logout')
 
     if session.get('username') is not None:
         return
     if request.path == '/login':
         return
     return redirect('/login')
-
-
-@app.route('/initialize')
-def initialize():
-    return render_template('initialize.html')
 
 
 @app.route('/readConfig', methods=['POST'])
