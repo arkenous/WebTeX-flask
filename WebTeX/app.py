@@ -138,6 +138,7 @@ def is_account_valid():
 @app.route('/logout')
 def logout():
     session.pop('username', None)
+    session.pop('cwd', None)
     return redirect('/login')
 
 
