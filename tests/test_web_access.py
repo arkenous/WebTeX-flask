@@ -21,10 +21,9 @@ def setup():
                  'ldap_basedn': '', 'java_home': '/usr/lib/jvm/java-8-oracle',
                  'redpen_conf_path': os.path.expanduser(
                      '~/redpen/conf/redpen-conf-en.xml')}
-    res = client.post('/saveConfig',
-                      data=json.dumps(conf_dict),
-                      content_type='application/json')
-    eq_(200, res.status_code)
+    client.post('/saveConfig',
+                data=json.dumps(conf_dict),
+                content_type='application/json')
 
 
 def teardown():

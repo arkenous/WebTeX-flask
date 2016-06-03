@@ -21,10 +21,9 @@ def setup():
                  'ldap_basedn': '', 'java_home': '/usr/lib/jvm/java-8-oracle',
                  'redpen_conf_path': os.path.expanduser(
                      '~/redpen/conf/redpen-conf-en.xml')}
-    res = client.post('/saveConfig',
-                      data=json.dumps(conf_dict),
-                      content_type='application/json')
-    eq_(200, res.status_code)
+    client.post('/saveConfig',
+                data=json.dumps(conf_dict),
+                content_type='application/json')
 
 
 def teardown():
@@ -108,10 +107,10 @@ def test_upload_file():
         r'\end{document}''\n'
     ).encode('utf-8')
     res = client.post(
-            '/upload',
-            data={
-                'file': (BytesIO(sample_tex_file_bytes), 'document.tex')
-            })
+        '/upload',
+        data={
+            'file': (BytesIO(sample_tex_file_bytes), 'document.tex')
+        })
     data = json.loads(json.loads(res.data.decode('utf-8'))['ResultSet'])
     eq_(200, res.status_code)
     eq_('Success', data['result'])
