@@ -62,5 +62,6 @@ def test_login_logout():
     config = ConfigParser()
     config.read(conf_path)
     config['setup']['initial_setup'] = 'true'
-    with open(conf_path, 'w') as configfile:
-        config.write(configfile)
+    f = open(conf_path, 'w')
+    config.write(f)
+    f.close()

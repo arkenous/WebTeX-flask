@@ -31,8 +31,9 @@ def teardown():
     config = ConfigParser()
     config.read(conf_path)
     config['setup']['initial_setup'] = 'true'
-    with open(conf_path, 'w') as configfile:
-        config.write(configfile)
+    f = open(conf_path, 'w')
+    config.write(f)
+    f.close()
 
     res = client.get('/')
     eq_(302, res.status_code)
@@ -44,15 +45,15 @@ def teardown():
 
     res = client.get('/initialize')
     eq_(200, res.status_code)
-    eq_('http://localhost/initialize', res.headers['Location'])
 
 
 def test_login():
     config = ConfigParser()
     config.read(conf_path)
     config['auth']['method'] = 'local'
-    with open(conf_path, 'w') as configfile:
-        config.write(configfile)
+    f = open(conf_path, 'w')
+    config.write(f)
+    f.close()
 
     res = client.post('/login', data={
         'username': 'Admin',

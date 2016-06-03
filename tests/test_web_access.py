@@ -31,8 +31,9 @@ def teardown():
     config = ConfigParser()
     config.read(conf_path)
     config['setup']['initial_setup'] = 'true'
-    with open(conf_path, 'w') as configfile:
-        config.write(configfile)
+    f = open(conf_path, 'w')
+    config.write(f)
+    f.close()
 
     res = client.get('/')
     eq_(302, res.status_code)
@@ -44,23 +45,24 @@ def teardown():
 
     res = client.get('/initialize')
     eq_(200, res.status_code)
-    eq_('http://localhost/initialize', res.headers['Location'])
 
 
 def change_initial_setup_to_true():
     config = ConfigParser()
     config.read(conf_path)
     config['setup']['initial_setup'] = 'true'
-    with open(conf_path, 'w') as configfile:
-        config.write(configfile)
+    f = open(conf_path, 'w')
+    config.write(f)
+    f.close()
 
 
 def change_initial_setup_to_false():
     config = ConfigParser()
     config.read(conf_path)
     config['setup']['initial_setup'] = 'false'
-    with open(conf_path, 'w') as configfile:
-        config.write(configfile)
+    f = open(conf_path, 'w')
+    config.write(f)
+    f.close()
 
 
 @with_setup(change_initial_setup_to_true, change_initial_setup_to_false)
@@ -81,7 +83,6 @@ def test_get_login_before_initialize():
 def test_get_initialize():
     res = client.get('/initialize')
     eq_(200, res.status_code)
-    eq_('http://localhost/initialize', res.headers['Location'])
 
 
 @with_setup(change_initial_setup_to_true, change_initial_setup_to_false)
@@ -93,7 +94,7 @@ def test_initialize():
     res = client.post('/saveConfig',
                       data=json.dumps(conf_dict),
                       content_type='application/json')
-    eq_('http://localhost/login', res.headers['Location'])
+    eq_(200, res.status_code)
 
     config = ConfigParser()
     config.read(conf_path)
