@@ -16,6 +16,17 @@ redpen_conf_path = os.path.expanduser('~/redpen/conf/redpen-conf-en.xml')
 java_home = '/usr/lib/jvm/java-8-oracle'
 
 
+def test_initialize():
+    conf_dict = {'mode': 'local', 'ldap_address': '', 'ldap_port': '',
+                 'ldap_basedn': '', 'java_home': '/usr/lib/jvm/java-8-oracle',
+                 'redpen_conf_path': os.path.expanduser(
+                     '~/redpen/conf/redpen-conf-en.xml')}
+    res = client.post('/saveConfig',
+                      data=json.dumps(conf_dict),
+                      content_type='application/json')
+    eq_('http://localhost/login', res.headers['Location'])
+
+
 def test_login():
     config = ConfigParser()
     config.read(conf_path)
@@ -126,3 +137,33 @@ def test_compile_tex():
     eq_('Success', data['result'])
     print(data['texlog'])
     eq_('True', data['existpdf'])
+
+
+def test_logout():
+    with client.session_transaction() as sess:
+        eq_(sess['username'], 'Admin')
+    res = client.get('/logout')
+    with client.session_transaction() as sess:
+        eq_(sess, {})
+    eq_(302, res.status_code)
+    eq_('http://localhost/login', res.headers['Location'])
+
+
+def test_finish():
+    config = ConfigParser()
+    config.read(conf_path)
+    config['setup']['initial_setup'] = 'true'
+    with open(conf_path, 'w') as configfile:
+        config.write(configfile)
+
+    res = client.get('/')
+    eq_(302, res.status_code)
+    eq_('http://localhost/initialize', res.headers['Location'])
+
+    res = client.get('/login')
+    eq_(302, res.status_code)
+    eq_('http://localhost/initialize', res.headers['Location'])
+
+    res = client.get('/initialize')
+    eq_(200, res.status_code)
+    eq_('http://localhost/initialize', res.headers['Location'])

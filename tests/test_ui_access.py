@@ -6,6 +6,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from nose.tools import eq_
+import os
 
 
 def test_login_logout():
@@ -14,7 +15,18 @@ def test_login_logout():
 
     driver.get('http://localhost:8080/')
     wait.until(ec.presence_of_all_elements_located)
-    print(driver.current_url)
+    eq_('http://localhost:8080/initialize', driver.current_url)
+
+    java_home = driver.find_element_by_id('java_home')
+    java_home.send_keys('/usr/lib/jvm/java-8-oracle')
+
+    redpen_path = driver.find_element_by_id('redpen_path')
+    redpen_path.send_keys(
+        os.path.expanduser('~/redpen/conf/redpen-conf-en.xml'))
+
+    initialize_ok = driver.find_element_by_id('OK')
+    initialize_ok.click()
+    wait.until(ec.presence_of_all_elements_located)
     eq_('http://localhost:8080/login', driver.current_url)
 
     show_signin = driver.find_element_by_id('showSignIn')

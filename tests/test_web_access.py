@@ -4,6 +4,7 @@
 from nose.tools import eq_, ok_
 from WebTeX import app
 import os
+import json
 from configparser import ConfigParser
 import random
 
@@ -13,6 +14,46 @@ webtex_path = os.path.dirname(os.path.abspath(__file__)) + '/../WebTeX/'
 conf_path = webtex_path + 'WebTeX.ini'
 ldap_userlist = ['riemann', 'gauss', 'euler', 'euclid',
                  'einstein', 'newton', 'galieleo', 'tesla']
+
+
+def test_get_index_before_initialize():
+    res = client.get('/')
+    eq_(302, res.status_code)
+    eq_('http://localhost/initialize', res.headers['Location'])
+
+
+def test_get_login_before_initialize():
+    res = client.get('/login')
+    eq_(302, res.status_code)
+    eq_('http://localhost/initialize', res.headers['Location'])
+
+
+def test_get_initialize():
+    res = client.get('/initialize')
+    eq_(200, res.status_code)
+    eq_('http://localhost/initialize', res.headers['Location'])
+
+
+def test_initialize():
+    conf_dict = {'mode': 'local', 'ldap_address': '', 'ldap_port': '',
+                 'ldap_basedn': '', 'java_home': '/usr/lib/jvm/java-8-oracle',
+                 'redpen_conf_path': os.path.expanduser(
+                     '~/redpen/conf/redpen-conf-en.xml')}
+    res = client.post('/saveConfig',
+                      data=json.dumps(conf_dict),
+                      content_type='application/json')
+    eq_('http://localhost/login', res.headers['Location'])
+
+    config = ConfigParser()
+    config.read(conf_path)
+    eq_('false', config['setup']['initial_setup'])
+    eq_('local', config['auth']['method'])
+    eq_('', config['ldap']['server'])
+    eq_('', config['ldap']['port'])
+    eq_('', config['ldap']['base_dn'])
+    eq_('/usr/lib/jvm/java-8-oracle', config['redpen']['java_home'])
+    eq_(os.path.expanduser('~/redpen/conf/redpen-conf-en.xml'),
+        config['redpen']['conf'])
 
 
 def test_get_index():
@@ -125,3 +166,23 @@ def test_get_index_after_logout():
     res = client.get('/')
     eq_(302, res.status_code)
     eq_('http://localhost/login', res.headers['Location'])
+
+
+def test_finish():
+    config = ConfigParser()
+    config.read(conf_path)
+    config['setup']['initial_setup'] = 'true'
+    with open(conf_path, 'w') as configfile:
+        config.write(configfile)
+
+    res = client.get('/')
+    eq_(302, res.status_code)
+    eq_('http://localhost/initialize', res.headers['Location'])
+
+    res = client.get('/login')
+    eq_(302, res.status_code)
+    eq_('http://localhost/initialize', res.headers['Location'])
+
+    res = client.get('/initialize')
+    eq_(200, res.status_code)
+    eq_('http://localhost/initialize', res.headers['Location'])
