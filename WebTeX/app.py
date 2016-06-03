@@ -28,10 +28,13 @@ def before_request():
     config = configparser.ConfigParser()
     config.read(conf)
     initial_setup = config['setup']['initial_setup']
-    if initial_setup == 'true':
+    if initial_setup == 'true' and request.path != '/initialize':
         return redirect('/initialize')
-    if request.path == '/initialize':
+    elif initial_setup != 'true' and request.path == '/initialize':
         return redirect('/logout')
+    elif request.path == '/initialize':
+        return
+
     if session.get('username') is not None:
         return
     if request.path == '/login':
