@@ -7,10 +7,16 @@
   <title>WebTeX</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
-  <link rel="stylesheet" href="../static/css/initialize.css">
+  <style>
+    #main {
+      padding-top: 50px;
+      padding-left: 100px;
+      padding-right: 100px;
+    }
+  </style>
 </head>
 <body>
-<div class="container=fluid" id="main">
+<div class="container-fluid" id="main">
   <div class="row">
     <div class="col-sm-12">
 
@@ -70,6 +76,80 @@
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
-<script src="../static/js/initialize.js"></script>
+<script>
+$(window).load(init());
+
+function init() {
+$(".ldap").hide();
+  readConfig();
+
+  $("input[name='mode']:radio").change(function() {
+    if ($(this).val() == 'local') {
+      $(".ldap").hide("normal");
+    } else {
+      $(".ldap").show("normal");
+    }
+  });
+  $("#OK").click(function (event) {
+    event.preventDefault();
+    saveConfig();
+  });
+}
+
+
+function readConfig() {
+  $.ajax({
+    type: 'POST',
+    url: '/readConfig',
+    contentType: 'application/json',
+    success: function(data) {
+      var parsed = JSON.parse(data.ResultSet);
+      var result = parsed.result;
+      if (result == "Success") {
+        $("input[name='mode']:radio").val(parsed.mode);
+        $("#ldap_address").val(parsed.ldap_address);
+        $("#ldap_port").val(parsed.ldap_port);
+        $("#ldap_basedn").val(parsed.ldap_basedn);
+        $("#java_home").val(parsed.java_home);
+        $("#redpen_path").val(parsed.redpen_conf_path);
+      }
+    }
+  });
+  return false;
+}
+
+
+function saveConfig() {
+  var mode = $("input[name='mode']:radio").val();
+
+  var ldap_address = $("#ldap_address").val();
+  var ldap_port = $("#ldap_port").val();
+  var ldap_basedn = $("#ldap_basedn").val();
+
+  var java_home = $("#java_home").val();
+  var redpen_conf_path = $("#redpen_path").val();
+
+  var json = JSON.stringify({
+    "mode": mode,
+    "ldap_address": ldap_address,
+    "ldap_port": ldap_port,
+    "ldap_basedn": ldap_basedn,
+    "java_home": java_home,
+    "redpen_conf_path": redpen_conf_path
+  });
+
+  $.ajax({
+    type: 'POST',
+    url: '/saveConfig',
+    data: json,
+    contentType: 'application/json',
+    success: function() {
+      console.log("save config succeed");
+      $(location).attr("href", "/login");
+    }
+  });
+  return false;
+}
+</script>
 </body>
 </html>
