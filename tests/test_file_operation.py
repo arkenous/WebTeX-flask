@@ -24,7 +24,7 @@ def setup():
     res = client.post('/saveConfig',
                       data=json.dumps(conf_dict),
                       content_type='application/json')
-    eq_('http://localhost/login', res.headers['Location'])
+    eq_(200, res.status_code)
 
 
 def teardown():
