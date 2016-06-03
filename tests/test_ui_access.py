@@ -9,8 +9,8 @@ from nose.tools import eq_
 import os
 from configparser import ConfigParser
 
-base = os.path.dirname(os.path.abspath(__file__))
-conf_path = base + '/WebTeX.ini'
+webtex_path = os.path.dirname(os.path.abspath(__file__)) + '/../WebTeX/'
+conf_path = webtex_path + 'WebTeX.ini'
 
 
 def test_login_logout():
