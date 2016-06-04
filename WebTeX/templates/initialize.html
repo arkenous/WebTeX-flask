@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge">
+  <meta content="width=device-width, initial-scale=1" name="viewport">
+  <title>WebTeX</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+  <style>
+    #main {
+      padding-top: 50px;
+      padding-left: 100px;
+      padding-right: 100px;
+    }
+  </style>
+</head>
+<body>
+<div class="container-fluid" id="main">
+  <div class="row">
+    <div class="col-sm-12">
+
+      <div class="form-group">
+        <label for="user-name">User name</label>
+        <input type="text" class="form-control" id="user-name" placeholder="Please input your user name">
+      </div>
+      <div class="form-group">
+        <label for="user-password">User password</label>
+        <input type="password" class="form-control" id="user-password" placeholder="Please input your user password">
+      </div>
+
+      <div class="mode">
+        <div class="radio-inline">
+          <input type="radio" value="local" name="mode" id="local_radio" checked>
+          <label for="local_radio">Local authentication</label>
+        </div>
+        <div class="radio-inline">
+          <input type="radio" value="ldap" name="mode" id="ldap_radio">
+          <label for="ldap_radio">LDAP authentication</label>
+        </div>
+      </div>
+
+      <div class="ldap">
+        <div class="form-group">
+          <label for="ldap_address">LDAP Address</label>
+          <input type="text" class="form-control" id="ldap_address" placeholder="LDAP Address">
+        </div>
+        <div class="form-group">
+          <label for="ldap_port">LDAP Port</label>
+          <input type="number" class="form-control" id="ldap_port" placeholder="LDAP port number">
+        </div>
+        <div class="form-group">
+          <label for="ldap_basedn">LDAP Base DN</label>
+          <input type="text" class="form-control" id="ldap_basedn" placeholder="LDAP Base DN">
+        </div>
+      </div>
+
+      <hr/>
+
+      <div class="form-group">
+        <label for="java_home">JAVA_HOME</label>
+        <input type="text" class="form-control" id="java_home" placeholder="JAVA_HOME">
+      </div>
+
+      <div class="form-group">
+        <label for="redpen_path">Absolute path of RedPen configuration file</label>
+        <input type="text" class="form-control" id="redpen_path" placeholder="Absolute path of RedPen configuration file">
+      </div>
+
+      <div class="btn-group pull-right" role="group" aria-label="OK">
+        <button type="button" class="btn btn-primary btn-lg" id="OK">OK</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+<script>
+$(window).load(init());
+
+function init() {
+$(".ldap").hide();
+  readConfig();
+
+  $("input[name='mode']:radio").change(function() {
+    if ($(this).val() == 'local') {
+      $(".ldap").hide("normal");
+    } else {
+      $(".ldap").show("normal");
+    }
+  });
+  $("#OK").click(function (event) {
+    event.preventDefault();
+
+    if (!$("#user-name").val() || !$("#user-password").val()) {
+      alert("Please input username and/or password");
+      return false;
+    }
+    if ($("input[name='mode']:radio").val() == 'ldap') {
+      if ((!$("#ldap_address").val() || !$("#ldap_port").val()) || !$("#ldap_basedn").val()) {
+        alert("Please input LDAP Address, Port, BaseDN correctly");
+        return false;
+      }
+    }
+    if (!$("#java_home").val()) {
+      alert("Please input JAVA_HOME path");
+      return false;
+    }
+    if (!$("#redpen_path").val()) {
+      alert("Please input RedPen configuration file path");
+      return false;
+    }
+
+    saveConfig();
+  });
+}
+
+
+function readConfig() {
+  $.ajax({
+    type: 'POST',
+    url: '/readConfig',
+    contentType: 'application/json',
+    success: function(data) {
+      var parsed = JSON.parse(data.ResultSet);
+      var result = parsed.result;
+      if (result == "Success") {
+        $("input[name='mode']:radio").val(parsed.mode);
+        $("#ldap_address").val(parsed.ldap_address);
+        $("#ldap_port").val(parsed.ldap_port);
+        $("#ldap_basedn").val(parsed.ldap_basedn);
+        $("#java_home").val(parsed.java_home);
+        $("#redpen_path").val(parsed.redpen_conf_path);
+      }
+    }
+  });
+  return false;
+}
+
+
+function saveConfig() {
+  var user_name = $("#user-name").val();
+  var user_password = $("#user-password").val();
+
+  var mode = $("input[name='mode']:radio").val();
+
+  var ldap_address = $("#ldap_address").val();
+  var ldap_port = $("#ldap_port").val();
+  var ldap_basedn = $("#ldap_basedn").val();
+
+  var java_home = $("#java_home").val();
+  var redpen_conf_path = $("#redpen_path").val();
+
+  var json = JSON.stringify({
+    "user_name": user_name,
+    "user_password": user_password,
+    "mode": mode,
+    "ldap_address": ldap_address,
+    "ldap_port": ldap_port,
+    "ldap_basedn": ldap_basedn,
+    "java_home": java_home,
+    "redpen_conf_path": redpen_conf_path
+  });
+
+  $.ajax({
+    type: 'POST',
+    url: '/saveConfig',
+    data: json,
+    contentType: 'application/json',
+    success: function() {
+      console.log("save config succeed");
+      $(location).attr("href", "/login");
+    }
+  });
+  return false;
+}
+</script>
+</body>
+</html>
