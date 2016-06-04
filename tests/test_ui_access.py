@@ -61,7 +61,6 @@ def test_login_logout():
     initialize_ok = driver.find_element_by_id('OK')
     initialize_ok.click()
     wait.until(ec.presence_of_all_elements_located)
-    eq_('http://localhost:8080/login', driver.current_url)
 
     show_signin = driver.find_element_by_id('showSignIn')
     show_signin.click()

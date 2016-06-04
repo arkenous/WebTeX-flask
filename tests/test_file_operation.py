@@ -24,17 +24,17 @@ def setup():
         'username': 'Admin',
         'password': 'webtex'
     })
-    eq_(200, res.status_code)
+    eq_(302, res.status_code)
+    eq_('http://localhost/initialize', res.headers['Location'])
 
     conf_dict = {'user_name': 'test-user', 'user_password': 'test-pass',
                  'mode': 'local', 'ldap_address': '', 'ldap_port': '',
                  'ldap_basedn': '', 'java_home': '/usr/lib/jvm/java-8-oracle',
                  'redpen_conf_path': os.path.expanduser(
                      '~/redpen/conf/redpen-conf-en.xml')}
-    res = client.post('/saveConfig',
-                      data=json.dumps(conf_dict),
-                      content_type='application/json')
-    eq_(200, res.status_code)
+    client.post('/saveConfig',
+                data=json.dumps(conf_dict),
+                content_type='application/json')
 
 
 def teardown():
