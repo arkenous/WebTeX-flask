@@ -25,29 +25,25 @@ storage = base + '/static/storage/'
 
 @app.before_request
 def before_request():
-    config = configparser.ConfigParser()
-    config.read(conf)
-    initial_setup = config['setup']['initial_setup']
-    if initial_setup == 'true' and request.path == '/initialize':
-        if session.get('username') is None:
-            return redirect('/login')
+    if 'username' in session:
+        config = configparser.ConfigParser()
+        config.read(conf)
+        initial_setup = config['setup']['initial_setup']
+        if initial_setup == 'true' and request.path == '/initialize':
+            return
+        if initial_setup == 'true' and (
+                request.path == '/readConfig' or request.path == '/saveConfig'):
+            return
+        if initial_setup == 'false' and request.path == '/initialize':
+            return redirect('/logout')
+        if initial_setup == 'false' and (
+                request.path == '/readConfig' or request.path == '/saveConfig'):
+            return redirect('/logout')
         return
-    if initial_setup == 'true' and (
-            request.path == '/readConfig' or request.path == '/saveConfig'):
-        if session.get('username') is None:
-            return redirect('/login')
-        return
-    if initial_setup == 'false' and request.path == '/initialize':
-        return redirect('/logout')
-    if initial_setup == 'false' and (
-            request.path == '/readConfig' or request.path == '/saveConfig'):
-        return redirect('/logout')
-
-    if session.get('username') is not None:
-        return
-    if request.path == '/login':
-        return
-    return redirect('/login')
+    else:
+        if request.path == '/login':
+            return
+        return redirect('/login')
 
 
 @app.route('/initialize', methods=['GET'])
