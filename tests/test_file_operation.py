@@ -24,8 +24,7 @@ def setup():
         'username': 'Admin',
         'password': 'webtex'
     })
-    eq_(302, res.status_code)
-    eq_('http://localhost/initialize', res.headers['Location'])
+    eq_(200, res.status_code)
 
     conf_dict = {'user_name': 'test-user', 'user_password': 'test-pass',
                  'mode': 'local', 'ldap_address': '', 'ldap_port': '',
