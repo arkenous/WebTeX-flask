@@ -94,6 +94,9 @@ def save_config():
     cur.close()
     con.close()
 
+    session.pop('username', None)
+    session.pop('cwd', None)
+
     dictionary['result'] = 'Success'
     return jsonify(ResultSet=json.dumps(dictionary))
 
