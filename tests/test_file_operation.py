@@ -41,6 +41,12 @@ def teardown():
     config = ConfigParser()
     config.read(conf_path)
     config['setup']['initial_setup'] = 'true'
+    config['auth']['method'] = 'local'
+    config['ldap']['server'] = ''
+    config['ldap']['port'] = ''
+    config['ldap']['base_dn'] = ''
+    config['redpen']['java_home'] = ''
+    config['redpen']['conf'] = ''
     f = open(conf_path, 'w')
     config.write(f)
     f.close()

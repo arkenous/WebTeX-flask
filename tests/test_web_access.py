@@ -41,6 +41,12 @@ def teardown():
     config = ConfigParser()
     config.read(conf_path)
     config['setup']['initial_setup'] = 'true'
+    config['auth']['method'] = 'local'
+    config['ldap']['server'] = ''
+    config['ldap']['port'] = ''
+    config['ldap']['base_dn'] = ''
+    config['redpen']['java_home'] = ''
+    config['redpen']['conf'] = ''
     f = open(conf_path, 'w')
     config.write(f)
     f.close()
@@ -95,7 +101,7 @@ def test_initialize():
         'username': 'test-user',
         'password': 'test-pass'
     })
-    eq_(200, res.status_code)
+    eq_(302, res.status_code)
 
     conf_dict = {'user_name': 'test-user', 'user_password': 'test-pass',
                  'mode': 'local', 'ldap_address': '', 'ldap_port': '',
