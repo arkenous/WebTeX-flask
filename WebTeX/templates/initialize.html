@@ -92,6 +92,26 @@ $(".ldap").hide();
   });
   $("#OK").click(function (event) {
     event.preventDefault();
+
+    if (!$("#user-name").val() || !$("#user-password").val()) {
+      alert("Please input username and/or password");
+      return false;
+    }
+    if ($("input[name='mode']:radio").val() == 'ldap') {
+      if ((!$("#ldap_address").val() || !$("#ldap_port").val()) || !$("#ldap_basedn").val()) {
+        alert("Please input LDAP Address, Port, BaseDN correctly");
+        return false;
+      }
+    }
+    if (!$("#java_home").val()) {
+      alert("Please input JAVA_HOME path");
+      return false;
+    }
+    if (!$("#redpen_path").val()) {
+      alert("Please input RedPen configuration file path");
+      return false;
+    }
+
     saveConfig();
   });
 }
