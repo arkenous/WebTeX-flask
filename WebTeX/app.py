@@ -11,7 +11,7 @@ from flask import Flask, render_template, session, request, redirect, jsonify
 from ldap3 import Server, Connection, \
     AUTH_SIMPLE, STRATEGY_SYNC, GET_ALL_INFO, LDAPBindError
 from werkzeug import utils
-from werkzeug.security import check_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 app.debug = False
@@ -72,6 +72,10 @@ def read_config():
 @app.route('/saveConfig', methods=['POST'])
 def save_config():
     dictionary = {}
+
+    user_name = utils.secure_filename(request.json['user_name'])
+    user_password = request.json['user_password']
+
     config = configparser.ConfigParser()
     config.read(conf)
     config['setup']['initial_setup'] = 'false'
@@ -84,6 +88,15 @@ def save_config():
     f = open(conf, 'w')
     config.write(f)
     f.close()
+
+    con = sqlite3.connect(db)
+    cur = con.cursor()
+    sql = 'UPDATE user SET username=(?), password=(?) WHERE username="Admin"'
+    cur.execute(sql, (user_name, generate_password_hash(user_password),))
+    con.commit()
+    cur.close()
+    con.close()
+
     dictionary['result'] = 'Success'
     return jsonify(ResultSet=json.dumps(dictionary))
 

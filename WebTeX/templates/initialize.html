@@ -120,6 +120,9 @@ function readConfig() {
 
 
 function saveConfig() {
+  var user_name = $("#user-name").val();
+  var user_password = $("#user-password").val();
+
   var mode = $("input[name='mode']:radio").val();
 
   var ldap_address = $("#ldap_address").val();
@@ -130,6 +133,8 @@ function saveConfig() {
   var redpen_conf_path = $("#redpen_path").val();
 
   var json = JSON.stringify({
+    "user_name": user_name,
+    "user_password": user_password,
     "mode": mode,
     "ldap_address": ldap_address,
     "ldap_port": ldap_port,
