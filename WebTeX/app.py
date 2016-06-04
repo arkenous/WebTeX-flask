@@ -34,6 +34,8 @@ def before_request():
         if initial_setup == 'true' and (
                 request.path == '/readConfig' or request.path == '/saveConfig'):
             return
+        if initial_setup == 'true':
+            return redirect('/initialize')
         if initial_setup == 'false' and request.path == '/initialize':
             return redirect('/logout')
         if initial_setup == 'false' and (
