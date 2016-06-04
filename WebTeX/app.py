@@ -29,13 +29,14 @@ def before_request():
     config.read(conf)
     initial_setup = config['setup']['initial_setup']
     if initial_setup == 'true' and request.path == '/initialize':
+        if session.get('username') is None:
+            return redirect('/login')
         return
     if initial_setup == 'true' and (
             request.path == '/readConfig' or request.path == '/saveConfig'):
+        if session.get('username') is None:
+            return redirect('/login')
         return
-    if initial_setup == 'true' and not (
-            request.path == '/readConfig' or request.path == '/saveConfig'):
-        return redirect('/initialize')
     if initial_setup == 'false' and request.path == '/initialize':
         return redirect('/logout')
     if initial_setup == 'false' and (
@@ -110,6 +111,11 @@ def index():
 def login():
     if request.method == 'POST' and is_account_valid():
         session['username'] = request.form['username']
+        config = configparser.ConfigParser()
+        config.read(conf)
+        initial_setup = config['setup']['initial_setup']
+        if initial_setup == 'true':
+            return redirect('/initialize')
         return redirect('/')
     return render_template('login.html')
 
