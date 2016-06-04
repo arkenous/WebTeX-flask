@@ -81,7 +81,7 @@ def save_config():
     config['auth']['method'] = request.json['mode']
     config['ldap']['server'] = request.json['ldap_address']
     config['ldap']['port'] = request.json['ldap_port']
-    config['ldap']['basedn'] = request.json['ldap_basedn']
+    config['ldap']['base_dn'] = request.json['ldap_basedn']
     config['redpen']['java_home'] = request.json['java_home']
     config['redpen']['conf'] = request.json['redpen_conf_path']
     f = open(conf, 'w')
