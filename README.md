@@ -7,6 +7,8 @@
 Web-based LaTeX editor and compiler.
 This application use [Flask](https://github.com/mitsuhiko/flask "https://github.com/mitsuhiko/flask").
 
+Docker image of this application is [here](https://github.com/trileg/docker-webtex "https://github.com/trileg/docker-webtex")
+
 ## Features
 - Edit, compile and preview LaTeX document on the web.
 - LDAP authentication support (using [LDAP3](https://github.com/cannatag/ldap3 "https://github.com/cannatag/ldap3")).
