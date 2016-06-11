@@ -1,7 +1,6 @@
 # WebTeX
 [![Build Status](https://travis-ci.org/trileg/WebTeX.svg?branch=master)](https://travis-ci.org/trileg/WebTeX)
 [![Code Climate](https://codeclimate.com/github/trileg/WebTeX/badges/gpa.svg)](https://codeclimate.com/github/trileg/WebTeX)
-[![Issue Count](https://codeclimate.com/github/trileg/WebTeX/badges/issue_count.svg)](https://codeclimate.com/github/trileg/WebTeX)
 [![Test Coverage](https://codeclimate.com/github/trileg/WebTeX/badges/coverage.svg)](https://codeclimate.com/github/trileg/WebTeX/coverage)
 [![Dependency Status](https://www.versioneye.com/user/projects/575bb1f57757a00041b3b74b/badge.svg?style=flat)](https://www.versioneye.com/user/projects/575bb1f57757a00041b3b74b)
 [![Join the chat at https://gitter.im/trileg/WebTeX](https://badges.gitter.im/trileg/WebTeX.svg)](https://gitter.im/trileg/WebTeX?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
