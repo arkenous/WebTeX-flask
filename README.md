@@ -5,6 +5,7 @@
 [![Dependency Status](https://www.versioneye.com/user/projects/575bb1f57757a00041b3b74b/badge.svg?style=flat)](https://www.versioneye.com/user/projects/575bb1f57757a00041b3b74b)
 [![Join the chat at https://gitter.im/trileg/WebTeX](https://badges.gitter.im/trileg/WebTeX.svg)](https://gitter.im/trileg/WebTeX?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![AMA](https://img.shields.io/badge/ask%20me-anything-0e7fc0.svg)](https://github.com/trileg/ama)
+[![license](https://img.shields.io/github/license/trileg/WebTeX.svg?maxAge=2592000)](LICENSE)
 
 Web-based LaTeX editor and compiler.
 This application use [Flask](https://github.com/mitsuhiko/flask "https://github.com/mitsuhiko/flask").
