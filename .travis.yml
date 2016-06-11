@@ -7,6 +7,10 @@ python:
   - "3.5"
   - "3.4"
 
+addons:
+  code_climate:
+    repo_token: $CODE_CLIMATE_TOKEN
+
 before_install:
   - sudo sed -i 's/us-central1.gce/us-central1.gce.clouds/' /etc/apt/sources.list
   - sudo apt-get -qq update
@@ -30,8 +34,6 @@ before_script:
 
 script: nosetests --with-coverage --cover-package=WebTeX
 
-after_success: coveralls --rcfile=.coveragerc
-
-addons:
-  code_climate:
-    repo_token: $CODE_CLIMATE_TOKEN
+after_success:
+  - coveralls --rcfile=.coveragerc
+  - CODECLIMATE_REPO_TOKEN=$CODE_CLIMATE_TOKEN codeclimate-test-reporter
