@@ -18,7 +18,7 @@ before_install:
 
 install:
   - "pip install -r pip-requirements.txt"
-  - "pip install coveralls selenium codeclimate-test-reporter"
+  - "pip install selenium codeclimate-test-reporter"
 
 before_script:
   - wget https://github.com/ajaxorg/ace-builds/archive/v1.2.3.tar.gz -O /tmp/ace.tar.gz
@@ -35,5 +35,4 @@ before_script:
 script: nosetests --with-coverage --cover-package=WebTeX
 
 after_success:
-  - coveralls --rcfile=.coveragerc
   - CODECLIMATE_REPO_TOKEN=$CODE_CLIMATE_TOKEN codeclimate-test-reporter

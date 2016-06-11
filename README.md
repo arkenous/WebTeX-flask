@@ -1,6 +1,5 @@
 # WebTeX
 [![Build Status](https://travis-ci.org/trileg/WebTeX.svg?branch=master)](https://travis-ci.org/trileg/WebTeX)
-[![Coverage Status](https://coveralls.io/repos/github/trileg/WebTeX/badge.svg?branch=master)](https://coveralls.io/github/trileg/WebTeX?branch=master)
 [![Join the chat at https://gitter.im/trileg/WebTeX](https://badges.gitter.im/trileg/WebTeX.svg)](https://gitter.im/trileg/WebTeX?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![AMA](https://img.shields.io/badge/ask%20me-anything-0e7fc0.svg)](https://github.com/trileg/ama)
 
