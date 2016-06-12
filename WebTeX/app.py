@@ -25,26 +25,18 @@ storage = base + '/static/storage/'
 
 @app.before_request
 def before_request():
-    if 'username' not in session:
-        if request.path == '/login':
-            return
+    if 'username' not in session and request.path != '/login':
         return redirect('/login')
 
     config = configparser.ConfigParser()
     config.read(conf)
     initial_setup = config['setup']['initial_setup']
-    if initial_setup == 'true' and request.path == '/initialize':
-        return
-    if initial_setup == 'true' and (
-            request.path == '/readConfig' or request.path == '/saveConfig'):
-        return
-    if initial_setup == 'true':
+    initial_setup_path = ['/initialize', '/readConfig', '/saveConfig']
+    if initial_setup == 'true' and request.path not in initial_setup_path:
         return redirect('/initialize')
-    if initial_setup == 'false' and request.path == '/initialize':
+    if initial_setup == 'false' and request.path in initial_setup_path:
         return redirect('/logout')
-    if initial_setup == 'false' and (
-            request.path == '/readConfig' or request.path == '/saveConfig'):
-        return redirect('/logout')
+
     return
 
 
