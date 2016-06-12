@@ -11,8 +11,7 @@ from flask import Flask, render_template, session, request, redirect, jsonify
 from ldap3 import Server, Connection, \
     AUTH_SIMPLE, STRATEGY_SYNC, GET_ALL_INFO, LDAPBindError
 from werkzeug import utils
-from werkzeug.security import generate_password_hash as generate, \
-    check_password_hash as check
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 app.debug = False
@@ -84,7 +83,7 @@ def save_config():
     con = sqlite3.connect(db)
     cur = con.cursor()
     sql = 'UPDATE user SET username=(?), password=(?) WHERE username="Admin"'
-    cur.execute(sql, (user_name, generate(user_password),))
+    cur.execute(sql, (user_name, generate_password_hash(user_password),))
     con.commit()
     cur.close()
     con.close()
@@ -133,16 +132,19 @@ def is_account_valid():
             return True
         except LDAPBindError:
             return False
-    if config['auth']['method'] == 'local':
+    elif config['auth']['method'] == 'local':
         con = sqlite3.connect(db)
         cur = con.cursor()
         sql = 'SELECT password FROM user WHERE username=(?)'
         cur.execute(sql, (username,))
         fetched = cur.fetchone()
-        if fetched is not None and check(fetched[0], request.form['password']):
+        if fetched is None:
+            return False
+        hashedpass = fetched[0]
+        if check_password_hash(hashedpass, request.form['password']):
             return True
-
-    return False
+        else:
+            return False
 
 
 @app.route('/logout')
@@ -170,7 +172,8 @@ def read_directory():
 
 @app.route('/createDirectory', methods=['POST'])
 def create_directory():
-    os.mkdir(storage + session['username'] + '/' + request.json['name'])
+    project = storage + session['username'] + '/' + request.json['name']
+    os.mkdir(project)
     return jsonify()
 
 
