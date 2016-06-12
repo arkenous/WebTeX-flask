@@ -24,7 +24,7 @@ function init() {
   // Ctrl + Sでコンパイルさせたい
   document.onkeydown = function (e) {
     if (event.ctrlKey) {
-      if (event.keyCode === 83) {
+      if (event.keyCode == 83) {
         //alert("Ctrl + S");
         compile();
         event.keyCode = 0;
@@ -34,8 +34,8 @@ function init() {
   }
 
   document.onkeypress = function (e) {
-    if ((e !== undefined) && (e !== null)) {
-      if ((e.ctrlKey || e.metaKey) && e.which === 115) {
+    if (e != null) {
+      if ((e.ctrlKey || e.metaKey) && e.which == 115) {
         //alert("Ctrl + S");
         compile();
         return false;
@@ -105,18 +105,18 @@ function setDirectory(directoryItem) {
     contentType: 'application/json',
     success: function (data) {
       var result = JSON.parse(data.ResultSet).result;
-      if (result === "Success") {
+      if (result == "Success") {
         cwd = directoryItem;
         readFilelist(directoryItem);
 
         // document.texファイルが存在するなら，読み込む
         var exist = JSON.parse(data.ResultSet).exist;
-        if (exist === "True") {
+        if (exist == "True") {
           var text = JSON.parse(data.ResultSet).text;
           editor.setValue(text);
         }
       } else {
-        console.log("Set Directory Failure");
+        alert("Set Directory Failure");
       }
     }
   });
@@ -132,7 +132,7 @@ function readFilelist(directoryItem) {
     success: function (data) {
       $("#filelist").empty();
       var result = JSON.parse(data.ResultSet).result;
-      if (result !== "Failure") {
+      if (result != "Failure") {
         $("#cwd").text(cwd);
         $("#filelist").append(
             "<li><a href='#uploadFileModal' id='upload' data-toggle='modal'>Upload file</a></li>"
@@ -150,13 +150,13 @@ function readFilelist(directoryItem) {
         $("#download").empty();
         var username = JSON.parse(data.ResultSet).username;
         var tex = JSON.parse(data.ResultSet).tex;
-        if (tex === "True") {
+        if (tex == "True") {
           $("#download").append(
               "<li><a href='../static/storage/" + username + "/" + cwd + "/document.tex' download='document.tex'>Download TeX file</a></li>"
           );
         }
         var pdf = JSON.parse(data.ResultSet).pdf;
-        if (pdf === "True") {
+        if (pdf == "True") {
           $("#download").append(
               "<li><a href='../static/storage/" + username + "/" + cwd + "/document.pdf' download='document.pdf'>Download PDF file</a></li>"
           );
@@ -181,7 +181,7 @@ function upload() {
     data: formData,
     success: function (data) {
       var result = JSON.parse(data.ResultSet).result;
-      if (result === "Success") {
+      if (result == "Success") {
         console.log("Success");
         readFilelist(cwd);
       } else {
@@ -194,7 +194,7 @@ function upload() {
 
 
 function compile() {
-  if (cwd !== "") {
+  if (cwd != "") {
     // エディタのテキストを読み出し，JSONに
     // これをpythonに投げて，コンパイルリザルト，ログを受け取る
     // コンパイルに成功すれば，PDFファイルをindex.htmlに追加する
@@ -209,7 +209,7 @@ function compile() {
       contentType: 'application/json',
       success: function (data) {
         var result = JSON.parse(data.ResultSet).result;
-        if (result === "Success") {
+        if (result == "Success") {
           var texlog = JSON.parse(data.ResultSet).texlog;
 
           // TeXログを挿入
@@ -220,7 +220,7 @@ function compile() {
 
           // PDFが存在していれば，RedPenログ，PDFファイルを挿入
           var existpdf = JSON.parse(data.ResultSet).existpdf;
-          if (existpdf === "True") {
+          if (existpdf == "True") {
             // RedPenログを挿入
             var redpenout = JSON.parse(data.ResultSet).redpenout;
             var redpenerr = JSON.parse(data.ResultSet).redpenerr;
