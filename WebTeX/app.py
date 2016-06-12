@@ -27,6 +27,8 @@ storage = base + '/static/storage/'
 def before_request():
     if 'username' not in session and request.path != '/login':
         return redirect('/login')
+    elif 'username' not in session and request.path == '/login':
+        return
 
     config = configparser.ConfigParser()
     config.read(conf)
