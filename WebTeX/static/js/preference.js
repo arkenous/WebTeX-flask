@@ -17,6 +17,13 @@ function init() {
     event.preventDefault();
     register();
   });
+
+  if ($("#switch-ldap").prop('checked')) {
+    $("#configure-ldap").click(function (event) {
+      event.preventDefault();
+      configureLdap();
+    });
+  }
 }
 
 function readConfig() {
@@ -77,6 +84,45 @@ function register() {
         $("#result-user-registration").empty();
         $("#result-user-registration").append(
             '<p class="result bg-info">Successfully Registration</p>'
+        );
+      }
+    }
+  });
+  return false;
+}
+
+function configureLdap() {
+  if ((!$("#ldap-address").val() || !$("#ldap-port").val()) || !$("#ldap-basedn").val()) {
+    $("#result-change-ldap").empty();
+    $("#result-change-ldap").append(
+        '<p class="result bg-danger">Please input LDAP Address, Port, BaseDN correctly</p>'
+    );
+    return false;
+  }
+
+  var json = JSON.stringify({
+    'ldap_address': $("#ldap-address").val(),
+    'ldap_port': $("#ldap-port").val(),
+    'ldap_basedn': $("#ldap-basedn").val()
+  });
+
+  $.ajax({
+    type: 'POST',
+    url: '/configureLdap',
+    data: json,
+    contentType: 'application/json',
+    success: function() {
+      var parsed = JSON.parse(data.ResultSet);
+      var result = parsed.result;
+      if (result === 'Failure') {
+        $("#result-change-ldap").empty();
+        $("#result-change-ldap").append(
+            '<p class="result bg-danger">'+parsed.cause+'</p>'
+        );
+      } else {
+        $("#result-change-ldap").empty();
+        $("#result-change-ldap").append(
+            '<p class="result bg-info">Successfully Change LDAP Configuration</p>'
         );
       }
     }
