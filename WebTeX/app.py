@@ -125,6 +125,17 @@ def configure_ldap():
 def change_path():
     dictionary = {}
 
+    config = configparser.ConfigParser()
+    config.read(conf)
+    config['redpen']['java_home'] = request.json['java_home']
+    config['redpen']['conf'] = request.json['redpen_path']
+    f = open(conf, 'w')
+    config.write(f)
+    f.close()
+
+    dictionary['result'] = 'Success'
+    return jsonify(ResultSet=json.dumps(dictionary))
+
 
 @app.route('/')
 def index():
