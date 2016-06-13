@@ -103,6 +103,28 @@ def save_config():
 def register_user():
     dictionary = {}
 
+    username = request.json['username']
+    password = request.json['password']
+
+    con = sqlite3.connect(db)
+    cur = con.cursor()
+    sql = 'SELECT username FROM user WHERE username=(?)'
+    cur.execute(sql, (username,))
+    fetched = cur.fetchone()
+    if fetched is not None:
+        dictionary['result'] = 'Failure'
+        dictionary['cause'] = 'Your specified user is already exists.'
+        return jsonify(ResultSet=json.dumps(dictionary))
+
+    sql = 'INSERT INTO user(username, password) VALUES (?, ?)'
+    cur.execute(sql, (username, generate(password),))
+    con.commit()
+    cur.close()
+    con.close()
+
+    dictionary['result'] = 'Success'
+    return jsonify(ResultSet=json.dumps(dictionary))
+
 
 @app.route('/configureLdap', methods=['POST'])
 def configure_ldap():
