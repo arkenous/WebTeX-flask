@@ -99,6 +99,11 @@ def save_config():
     return jsonify(ResultSet=json.dumps(dictionary))
 
 
+@app.route('/preference')
+def preference():
+    return render_template('preference.html')
+
+
 @app.route('/registerUser', methods=['POST'])
 def register_user():
     dictionary = {}
