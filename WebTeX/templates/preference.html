@@ -34,7 +34,50 @@
     <hr/>
     <div class="row">
       <div class="col-sm-12">
-        <p>sample</p>
+        <label>
+          <input type="checkbox" id="switch-ldap"> LDAP Authentication
+        </label>
+        <div id="ldap">
+          <h3>Configure LDAP</h3>
+          <div class="form-group">
+            <label for="ldap-address">LDAP Address</label>
+            <input type="text" class="form-control" id="ldap-address" placeholder="Please input LDAP server address here">
+          </div>
+          <div class="form-group">
+            <label for="ldap-port">LDAP Port</label>
+            <input type="number" class="form-control" id="ldap-port" placeholder="Please input LDAP server port here">
+          </div>
+          <div class="form-group">
+            <label for="ldap-basedn">LDAP Base DN</label>
+            <input type="text" class="form-control" id="ldap-basedn" placeholder="Please input LDAP Base DN here">
+          </div>
+          <div id="result-change-ldap">
+            <p class="result bg-info">Successfully Configure LDAP</p>
+          </div>
+          <div class="btn-group pull-right" role="group" aria-label="OK">
+            <button type="button" class="btn btn-primary" id="configure-ldap">Configure</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr/>
+    <div class="row">
+      <div class="col-sm-12">
+        <h3>Change Program/Configuration File Path</h3>
+        <div class="form-group">
+          <label for="redpen-path">RedPen Configuration File Path</label>
+          <input type="text" class="form-control" id="redpen-path" placeholder="Please input absolute path to the RedPen configuration file">
+        </div>
+        <div class="form-group">
+          <label for="java-home">JAVA_HOME</label>
+          <input type="text" class="form-control" id="java-home" placeholder="Please input absolute path of JAVA_HOME">
+        </div>
+        <div id="result-change-path">
+          <p class="result bg-info">Successfully Change Path</p>
+        </div>
+        <div class="btn-group pull-right" role="group" aria-label="OK">
+          <button type="button" class="btn btn-primary" id="change-path">Change</button>
+        </div>
       </div>
     </div>
   </div>
