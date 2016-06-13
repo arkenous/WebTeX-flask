@@ -29,6 +29,7 @@ Default account is **Admin** and password is **webtex**
 - [RedPen](https://github.com/redpen-cc/redpen/ "https://github.com/redpen-cc/redpen/")
 - [Ace](https://github.com/ajaxorg/ace-builds "https://github.com/ajaxorg/ace-builds")
   - Placement path: `static/ace-builds/src-noconflict/`
+- pdftotext (poppler-utils)
 
 ## Author
 [Kensuke Kosaka](https://github.com/trileg "https://github.com/trileg")
