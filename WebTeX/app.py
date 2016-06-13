@@ -35,9 +35,10 @@ def before_request():
     config.read(conf)
     initial_setup = config['setup']['initial_setup']
     initial_setup_path = ['/initialize', '/readConfig', '/saveConfig']
+    only_initial_setup = ['/initialize', '/saveConfig']
     if initial_setup == 'true' and request.path not in initial_setup_path:
         return redirect('/initialize')
-    if initial_setup == 'false' and request.path in initial_setup_path:
+    if initial_setup == 'false' and request.path in only_initial_setup:
         return redirect('/logout')
 
     return
