@@ -24,6 +24,11 @@ function init() {
       configureLdap();
     });
   }
+
+  $("#change-path").click(function (event) {
+    event.preventDefault();
+    changePath();
+  });
 }
 
 function readConfig() {
@@ -72,7 +77,7 @@ function register() {
     url: '/registerUser',
     data: json,
     contentType: 'application/json',
-    success: function() {
+    success: function(data) {
       var parsed = JSON.parse(data.ResultSet);
       var result = parsed.result;
       if (result === 'Failure') {
@@ -111,7 +116,7 @@ function configureLdap() {
     url: '/configureLdap',
     data: json,
     contentType: 'application/json',
-    success: function() {
+    success: function(data) {
       var parsed = JSON.parse(data.ResultSet);
       var result = parsed.result;
       if (result === 'Failure') {
@@ -123,6 +128,44 @@ function configureLdap() {
         $("#result-change-ldap").empty();
         $("#result-change-ldap").append(
             '<p class="result bg-info">Successfully Change LDAP Configuration</p>'
+        );
+      }
+    }
+  });
+  return false;
+}
+
+function changePath() {
+  if (!$("#redpen-path").val() || !$("#java-home").val()) {
+    $("#result-change-path").empty();
+    $("#result-change-path").append(
+        '<p class="result bg-danger">Please input RedPen Path and/or JAVA_HOME</p>'
+    );
+    return false;
+  }
+
+  var json = JSON.stringify({
+    'redpen_path': $("#redpen-path").val(),
+    'java_home': $("#java-home").val()
+  });
+
+  $.ajax({
+    type: 'POST',
+    url: '/changePath',
+    data: json,
+    contentType: 'application/json',
+    success: function (data) {
+      var parsed = JSON.parse(data.ResultSet);
+      var result = parsed.result;
+      if (result === 'Failure') {
+        $("#result-change-path").empty();
+        $("#result-change-path").append(
+            '<p class="result bg-danger">'+parsed.cause+'</p>'
+        );
+      } else {
+        $("#result-change-path").empty();
+        $("#result-change-path").append(
+            '<p class="result bg-info">Successfully Change Paths</p>'
         );
       }
     }
