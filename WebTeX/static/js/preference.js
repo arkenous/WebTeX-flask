@@ -18,12 +18,12 @@ function init() {
     register();
   });
 
-  if ($("#switch-ldap").prop('checked')) {
-    $("#configure-ldap").click(function (event) {
-      event.preventDefault();
+  $("#configure-ldap").click(function (event) {
+    event.preventDefault();
+    if ($("#switch-ldap").prop('checked')) {
       configureLdap();
-    });
-  }
+    }
+  });
 
   $("#change-path").click(function (event) {
     event.preventDefault();
