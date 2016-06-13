@@ -99,6 +99,21 @@ def save_config():
     return jsonify(ResultSet=json.dumps(dictionary))
 
 
+@app.route('/registerUser', methods=['POST'])
+def register_user():
+    dictionary = {}
+
+
+@app.route('/configureLdap', methods=['POST'])
+def configure_ldap():
+    dictionary = {}
+
+
+@app.route('/changePath', methods=['POST'])
+def change_path():
+    dictionary = {}
+
+
 @app.route('/')
 def index():
     return render_template('index.html')
