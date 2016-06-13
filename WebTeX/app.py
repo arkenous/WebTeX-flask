@@ -108,6 +108,18 @@ def register_user():
 def configure_ldap():
     dictionary = {}
 
+    config = configparser.ConfigParser()
+    config.read(conf)
+    config['ldap']['server'] = request.json['ldap_address']
+    config['ldap']['port'] = request.json['ldap_port']
+    config['ldap']['base_dn'] = request.json['ldap_basedn']
+    f = open(conf, 'w')
+    config.write(f)
+    f.close()
+
+    dictionary['result'] = 'Success'
+    return jsonify(ResultSet=json.dumps(dictionary))
+
 
 @app.route('/changePath', methods=['POST'])
 def change_path():
