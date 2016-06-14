@@ -29,16 +29,9 @@
         <input type="password" class="form-control" id="user-password" placeholder="Please input your user password">
       </div>
 
-      <div class="mode">
-        <div class="radio-inline">
-          <input type="radio" value="local" name="mode" id="local_radio" checked>
-          <label for="local_radio">Local authentication</label>
-        </div>
-        <div class="radio-inline">
-          <input type="radio" value="ldap" name="mode" id="ldap_radio">
-          <label for="ldap_radio">LDAP authentication</label>
-        </div>
-      </div>
+      <label>
+        <input type="checkbox" id="switch-ldap"> LDAP Authentication
+      </label>
 
       <div class="ldap">
         <div class="form-group">
@@ -83,13 +76,14 @@ function init() {
 $(".ldap").hide();
   readConfig();
 
-  $("input[name='mode']:radio").change(function() {
-    if ($(this).val() == 'local') {
-      $(".ldap").hide("normal");
-    } else {
+  $("#switch-ldap").change(function() {
+    if ($(this).prop('checked')) {
       $(".ldap").show("normal");
+    } else {
+      $(".ldap").hide("normal");
     }
   });
+
   $("#OK").click(function (event) {
     event.preventDefault();
 
@@ -97,7 +91,7 @@ $(".ldap").hide();
       alert("Please input username and/or password");
       return false;
     }
-    if ($("input[name='mode']:radio").val() == 'ldap') {
+    if ($("#switch-ldap").prop('checked')) {
       if ((!$("#ldap_address").val() || !$("#ldap_port").val()) || !$("#ldap_basedn").val()) {
         alert("Please input LDAP Address, Port, BaseDN correctly");
         return false;
@@ -125,8 +119,12 @@ function readConfig() {
     success: function(data) {
       var parsed = JSON.parse(data.ResultSet);
       var result = parsed.result;
-      if (result == "Success") {
-        $("input[name='mode']:radio").val(parsed.mode);
+      if (result === "Success") {
+        if (parsed.mode === 'ldap') {
+          $("#switch-ldap").prop('checked', true);
+        } else {
+          $("#switch-ldap").prop('checked', false);
+        }
         $("#ldap_address").val(parsed.ldap_address);
         $("#ldap_port").val(parsed.ldap_port);
         $("#ldap_basedn").val(parsed.ldap_basedn);
@@ -143,7 +141,8 @@ function saveConfig() {
   var user_name = $("#user-name").val();
   var user_password = $("#user-password").val();
 
-  var mode = $("input[name='mode']:radio").val();
+  var mode = 'local';
+  if ($("#switch-ldap").prop('checked')) mode = 'ldap';
 
   var ldap_address = $("#ldap_address").val();
   var ldap_port = $("#ldap_port").val();
