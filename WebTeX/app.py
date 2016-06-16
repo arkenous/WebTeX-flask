@@ -339,5 +339,29 @@ def compile_tex():
     return jsonify(ResultSet=json.dumps(dictionary))
 
 
+@app.route('/correct', methods=['POST'])
+def correct_doc():
+    dictionary = {}
+    text = request.json['text']
+    config = configparser.ConfigParser()
+    config.read(conf)
+    os.environ['JAVA_HOME'] = config['redpen']['java_home']
+    redpen_config_detail = subprocess.check_output(
+        ['cat', config['redpen']['conf']]
+    ).decode('utf-8')
+    redpen_document = "document='"+text+"'"
+    redpen_config = "config='"+redpen_config_detail+"'"
+    redpen = subprocess.Popen(
+        ['curl', '--data', redpen_document, '--data', 'lang=ja', '--data',
+         'format=PLAIN2', '--data', redpen_config,
+         '127.0.0.1:8080/rest/document/validate/'],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE
+    ).communicate()
+    dictionary['redpenout'] = redpen[0].decode('utf-8').splitlines()
+    dictionary['redpenerr'] = redpen[1].decode('utf-8').splitlines()
+
+    return jsonify(ResultSet=json.dumps(dictionary))
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080, threaded=True)
