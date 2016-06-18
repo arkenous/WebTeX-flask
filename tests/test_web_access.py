@@ -15,8 +15,8 @@ client = app.app.test_client()
 webtex_path = os.path.dirname(os.path.abspath(__file__)) + '/../WebTeX/'
 conf_path = webtex_path + 'WebTeX.ini'
 db_path = webtex_path + 'WebTeX.db'
-ldap_userlist = ['riemann', 'gauss', 'euler', 'euclid',
-                 'einstein', 'newton', 'galieleo', 'tesla']
+ldap_user_dict = {'charlotte':'dunois', 'laura':'bodewig',
+                  'houki':'shinonono', 'cecilia':'alcott', 'lingyin':'huang'}
 
 
 def setup():
@@ -182,13 +182,13 @@ def test_fail_login_ldap():
     config = ConfigParser()
     config.read(conf_path)
     config['auth']['method'] = 'ldap'
-    config['ldap']['server'] = 'ldap.forumsys.com'
-    config['ldap']['port'] = '389'
-    config['ldap']['base_dn'] = 'dc=example,dc=com'
+    config['ldap']['server'] = 'trileg.net'
+    config['ldap']['port'] = '50389'
+    config['ldap']['base_dn'] = 'ou=People,dc=trileg,dc=net'
     with open(conf_path, 'w') as configfile:
         config.write(configfile)
 
-    username = 'test'
+    username = random.choice(ldap_user_dict.keys())
     res = client.post('/login', data={
         'username': username,
         'password': 'password'
@@ -200,16 +200,16 @@ def test_login_ldap():
     config = ConfigParser()
     config.read(conf_path)
     config['auth']['method'] = 'ldap'
-    config['ldap']['server'] = 'ldap.forumsys.com'
-    config['ldap']['port'] = '389'
-    config['ldap']['base_dn'] = 'dc=example,dc=com'
+    config['ldap']['server'] = 'trileg.net'
+    config['ldap']['port'] = '50389'
+    config['ldap']['base_dn'] = 'ou=People,dc=trileg,dc=net'
     with open(conf_path, 'w') as configfile:
         config.write(configfile)
 
-    username = random.choice(ldap_userlist)
+    username = random.choice(ldap_user_dict.keys())
     res = client.post('/login', data={
         'username': username,
-        'password': 'password'
+        'password': ldap_user_dict[username]
     })
     eq_(302, res.status_code)
     eq_('http://localhost/', res.headers['Location'])
@@ -222,7 +222,7 @@ def test_get_index_after_login():
 
 def test_logout_ldap():
     with client.session_transaction() as sess:
-        ok_(sess['username'] in ldap_userlist)
+        ok_(sess['username'] in ldap_user_dict)
     res = client.get('/logout')
     with client.session_transaction() as sess:
         eq_(sess, {})
