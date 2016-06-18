@@ -188,7 +188,7 @@ def test_fail_login_ldap():
     with open(conf_path, 'w') as configfile:
         config.write(configfile)
 
-    username = random.choice(ldap_user_dict.keys())
+    username = random.choice(list(ldap_user_dict.keys()))
     res = client.post('/login', data={
         'username': username,
         'password': 'password'
@@ -206,7 +206,7 @@ def test_login_ldap():
     with open(conf_path, 'w') as configfile:
         config.write(configfile)
 
-    username = random.choice(ldap_user_dict.keys())
+    username = random.choice(list(ldap_user_dict.keys()))
     res = client.post('/login', data={
         'username': username,
         'password': ldap_user_dict[username]
