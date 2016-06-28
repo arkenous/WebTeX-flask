@@ -31,7 +31,7 @@ function init() {
         return false;
       }
     }
-  }
+  };
 
   document.onkeypress = function (e) {
     if ((e !== undefined) && (e !== null)) {
@@ -47,9 +47,14 @@ function init() {
 
 // 初回起動およびディレクトリ作成時に実行
 function readDirectory() {
+  var json = JSON.stringify({
+    "_csrf_token": $("#_csrf_token").val()
+  });
+  
   $.ajax({
     type: 'POST',
     url: '/readDirectory',
+    data: json,
     contentType: 'application/json',
     success: function (data) {
       $("#directorylist").empty();
@@ -80,7 +85,10 @@ function readDirectory() {
 
 function createDirectory(directoryName) {
   // スクリプトに渡すJSONを作成
-  var json = JSON.stringify({"name": directoryName});
+  var json = JSON.stringify({
+    "name": directoryName,
+    "_csrf_token": $("#_csrf_token").val()
+  });
 
   $.ajax({
     type: 'POST',
@@ -96,7 +104,10 @@ function createDirectory(directoryName) {
 
 
 function setDirectory(directoryItem) {
-  var json = JSON.stringify({"name": directoryItem});
+  var json = JSON.stringify({
+    "name": directoryItem,
+    "_csrf_token": $("#_csrf_token").val()
+  });
 
   $.ajax({
     type: 'POST',
@@ -125,9 +136,14 @@ function setDirectory(directoryItem) {
 
 
 function readFilelist(directoryItem) {
+  var json = JSON.stringify({
+    "_csrf_token": $("#_csrf_token").val()
+  });
+
   $.ajax({
     type: 'POST',
     url: '/readFilelist',
+    data: json,
     contentType: 'application/json',
     success: function (data) {
       $("#filelist").empty();
@@ -170,6 +186,7 @@ function readFilelist(directoryItem) {
 
 function upload() {
   var formData = new FormData($("#uploadForm")[0]);
+  formData.append('_csrf_token', $("#_csrf_token").val());
 
   // processDataとcontentTypeのfalseは，formのファイルをPOSTする際には必要みたい
   $.ajax({
@@ -200,7 +217,10 @@ function compile() {
     // コンパイルに成功すれば，PDFファイルをindex.htmlに追加する
     editor.setReadOnly(true);
     var text = editor.getValue();
-    var json = JSON.stringify({"text": text});
+    var json = JSON.stringify({
+      "text": text,
+      "_csrf_token": $("#_csrf_token").val()
+    });
 
     $.ajax({
       type: 'POST',

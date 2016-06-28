@@ -33,12 +33,18 @@ def generate_csrf_token():
 app.jinja_env.globals['csrf_token'] = generate_csrf_token
 
 
-def check_csrf(request_):
+def check_csrf(request_, type_):
     config = configparser.ConfigParser()
     config.read(conf)
     if config['dev']['check_csrf'] == 'true':
         token = session['_csrf_token']
-        if not token or token != request_.json['_csrf_token']:
+        if type_ == 'json':
+            if not token or token != request_.json['_csrf_token']:
+                return False
+        elif type_ == 'form':
+            if not token or token != request_.form['_csrf_token']:
+                return False
+        else:
             return False
     return True
 
@@ -70,7 +76,7 @@ def initialize():
 
 @app.route('/readConfig', methods=['POST'])
 def read_config():
-    if not check_csrf(request):
+    if not check_csrf(request, 'json'):
         abort(403)
 
     dictionary = {}
@@ -88,7 +94,7 @@ def read_config():
 
 @app.route('/saveConfig', methods=['POST'])
 def save_config():
-    if not check_csrf(request):
+    if not check_csrf(request, 'json'):
         abort(403)
 
     dictionary = {}
@@ -182,6 +188,9 @@ def logout():
 
 @app.route('/readDirectory', methods=['POST'])
 def read_directory():
+    if not check_csrf(request, 'json'):
+        abort(403)
+
     dictionary = {}
     if not os.path.exists(storage) or not os.path.isdir(storage):
         os.mkdir(storage)
@@ -198,12 +207,18 @@ def read_directory():
 
 @app.route('/createDirectory', methods=['POST'])
 def create_directory():
+    if not check_csrf(request, 'json'):
+        abort(403)
+
     os.mkdir(storage + session['username'] + '/' + request.json['name'])
     return jsonify()
 
 
 @app.route('/setDirectory', methods=['POST'])
 def set_directory():
+    if not check_csrf(request, 'json'):
+        abort(403)
+
     dictionary = {}
     session['cwd'] = storage + session['username'] + '/' + request.json['name']
     os.chdir(session.get('cwd'))
@@ -225,6 +240,9 @@ def set_directory():
 
 @app.route('/readFilelist', methods=['POST'])
 def read_filelist():
+    if not check_csrf(request, 'json'):
+        abort(403)
+
     dictionary = {}
     if session.get('cwd') == '' or session.get('cwd') is None:
         dictionary['result'] = 'Failure'
@@ -246,6 +264,9 @@ def read_filelist():
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
+    if not check_csrf(request, 'form'):
+        abort(403)
+
     dictionary = {}
     if session.get('cwd') == '' or session.get('cwd') is None:
         dictionary['result'] = 'Failure'
@@ -263,6 +284,9 @@ def upload_file():
 
 @app.route('/compile', methods=['POST'])
 def compile_tex():
+    if not check_csrf(request, 'json'):
+        abort(403)
+
     dictionary = {}
     if session.get('cwd') == '' or session.get('cwd') is None:
         dictionary['result'] = 'Failure'
@@ -306,7 +330,7 @@ def preference():
 
 @app.route('/registerUser', methods=['POST'])
 def register_user():
-    if not check_csrf(request):
+    if not check_csrf(request, 'json'):
         abort(403)
 
     dictionary = {}
@@ -336,7 +360,7 @@ def register_user():
 
 @app.route('/configureLdap', methods=['POST'])
 def configure_ldap():
-    if not check_csrf(request):
+    if not check_csrf(request, 'json'):
         abort(403)
 
     dictionary = {}
@@ -356,7 +380,7 @@ def configure_ldap():
 
 @app.route('/changePath', methods=['POST'])
 def change_path():
-    if not check_csrf(request):
+    if not check_csrf(request, 'json'):
         abort(403)
 
     dictionary = {}
