@@ -180,7 +180,7 @@ def test_logout_local():
         eq_(sess['username'], 'test-user')
     res = client.get('/logout')
     with client.session_transaction() as sess:
-        eq_(sess, {})
+        eq_('username' in sess, False)
     eq_(302, res.status_code)
     eq_('http://localhost/login', res.headers['Location'])
 
@@ -232,14 +232,14 @@ def test_logout_ldap():
         ok_(sess['username'] in ldap_user_dict)
     res = client.get('/logout')
     with client.session_transaction() as sess:
-        eq_(sess, {})
+        eq_('username' in sess, False)
     eq_(302, res.status_code)
     eq_('http://localhost/login', res.headers['Location'])
 
 
 def test_get_index_after_logout():
     with client.session_transaction() as sess:
-        eq_(sess, {})
+        eq_('username' in sess, False)
     res = client.get('/')
     eq_(302, res.status_code)
     eq_('http://localhost/login', res.headers['Location'])
