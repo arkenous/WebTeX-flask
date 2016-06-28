@@ -60,6 +60,8 @@
         <input type="text" class="form-control" id="redpen_path" placeholder="Absolute path of RedPen configuration file">
       </div>
 
+      <input type="hidden" id="_csrf_token" value="{{ csrf_token() }}">
+
       <div class="btn-group pull-right" role="group" aria-label="OK">
         <button type="button" class="btn btn-primary btn-lg" id="OK">OK</button>
       </div>
@@ -112,9 +114,14 @@ $(".ldap").hide();
 
 
 function readConfig() {
+  var json = JSON.stringify({
+    "_csrf_token": $("#_csrf_token").val()
+  });
+
   $.ajax({
     type: 'POST',
     url: '/readConfig',
+    data: json,
     contentType: 'application/json',
     success: function(data) {
       var parsed = JSON.parse(data.ResultSet);
@@ -152,6 +159,7 @@ function saveConfig() {
   var redpen_conf_path = $("#redpen_path").val();
 
   var json = JSON.stringify({
+    "_csrf_token": $("#_csrf_token").val(),
     "user_name": user_name,
     "user_password": user_password,
     "mode": mode,

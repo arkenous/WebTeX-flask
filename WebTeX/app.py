@@ -7,7 +7,9 @@ import sqlite3
 import subprocess
 
 import os
-from flask import Flask, render_template, session, request, redirect, jsonify
+from base64 import b64encode
+from flask import Flask, render_template, session, request, redirect, \
+    jsonify, abort
 from ldap3 import Server, Connection, \
     AUTH_SIMPLE, STRATEGY_SYNC, GET_ALL_INFO, LDAPBindError
 from werkzeug import utils
@@ -22,6 +24,20 @@ base = os.path.dirname(os.path.abspath(__file__))
 conf = base + '/WebTeX.ini'
 db = base + '/WebTeX.db'
 storage = base + '/static/storage/'
+
+
+def generate_csrf_token():
+    if '_csrf_token' not in session:
+        session['_csrf_token'] = b64encode(os.urandom(32)).decode('utf-8')
+    return session['_csrf_token']
+app.jinja_env.globals['csrf_token'] = generate_csrf_token
+
+
+def check_csrf(request_token):
+    token = session.pop('_csrf_token', None)
+    if not token or token != request_token:
+        return False
+    return True
 
 
 @app.before_request
@@ -51,6 +67,9 @@ def initialize():
 
 @app.route('/readConfig', methods=['POST'])
 def read_config():
+    if not check_csrf(request.json['_csrf_token']):
+        abort(403)
+
     dictionary = {}
     config = configparser.ConfigParser()
     config.read(conf)
@@ -66,6 +85,9 @@ def read_config():
 
 @app.route('/saveConfig', methods=['POST'])
 def save_config():
+    if not check_csrf(request.json['_csrf_token']):
+        abort(403)
+
     dictionary = {}
 
     user_name = utils.secure_filename(request.json['user_name'])
