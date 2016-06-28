@@ -131,6 +131,9 @@ def preference():
 
 @app.route('/registerUser', methods=['POST'])
 def register_user():
+    if not check_csrf(request):
+        abort(403)
+
     dictionary = {}
 
     username = request.json['username']
@@ -158,6 +161,9 @@ def register_user():
 
 @app.route('/configureLdap', methods=['POST'])
 def configure_ldap():
+    if not check_csrf(request):
+        abort(403)
+
     dictionary = {}
 
     config = configparser.ConfigParser()
@@ -175,6 +181,9 @@ def configure_ldap():
 
 @app.route('/changePath', methods=['POST'])
 def change_path():
+    if not check_csrf(request):
+        abort(403)
+
     dictionary = {}
 
     config = configparser.ConfigParser()

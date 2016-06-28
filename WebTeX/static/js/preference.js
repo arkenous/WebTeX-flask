@@ -32,9 +32,14 @@ function init() {
 }
 
 function readConfig() {
+  var json = JSON.stringify({
+    "_csrf_token": $("#_csrf_token").val()
+  });
+
   $.ajax({
     type: 'POST',
     url: '/readConfig',
+    data: json,
     contentType: 'application/json',
     success: function(data) {
       var parsed = JSON.parse(data.ResultSet);
@@ -69,7 +74,8 @@ function register() {
 
   var json = JSON.stringify({
     'username': $("#username").val(),
-    'password': $("#password").val()
+    'password': $("#password").val(),
+    '_csrf_token': $("#_csrf_token").val()
   });
 
   $.ajax({
@@ -108,7 +114,8 @@ function configureLdap() {
   var json = JSON.stringify({
     'ldap_address': $("#ldap-address").val(),
     'ldap_port': $("#ldap-port").val(),
-    'ldap_basedn': $("#ldap-basedn").val()
+    'ldap_basedn': $("#ldap-basedn").val(),
+    '_csrf_token': $("#_csrf_token").val()
   });
 
   $.ajax({
@@ -146,7 +153,8 @@ function changePath() {
 
   var json = JSON.stringify({
     'redpen_path': $("#redpen-path").val(),
-    'java_home': $("#java-home").val()
+    'java_home': $("#java-home").val(),
+    '_csrf_token': $("#_csrf_token").val()
   });
 
   $.ajax({
