@@ -33,10 +33,13 @@ def generate_csrf_token():
 app.jinja_env.globals['csrf_token'] = generate_csrf_token
 
 
-def check_csrf(request_token):
-    token = session.pop('_csrf_token', None)
-    if not token or token != request_token:
-        return False
+def check_csrf(request_):
+    config = configparser.ConfigParser()
+    config.read(conf)
+    if config['dev']['check_csrf'] == 'true':
+        token = session.pop('_csrf_token', None)
+        if not token or token != request_.json['_csrf_token']:
+            return False
     return True
 
 
@@ -67,9 +70,8 @@ def initialize():
 
 @app.route('/readConfig', methods=['POST'])
 def read_config():
-    if not app.testing:
-        if not check_csrf(request.json['_csrf_token']):
-            abort(403)
+    if not check_csrf(request):
+        abort(403)
 
     dictionary = {}
     config = configparser.ConfigParser()
@@ -86,9 +88,8 @@ def read_config():
 
 @app.route('/saveConfig', methods=['POST'])
 def save_config():
-    if not app.testing:
-        if not check_csrf(request.json['_csrf_token']):
-            abort(403)
+    if not check_csrf(request):
+        abort(403)
 
     dictionary = {}
 

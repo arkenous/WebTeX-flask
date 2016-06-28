@@ -20,6 +20,12 @@ ldap_user_dict = {'charlotte':'dunois', 'laura':'bodewig',
 
 
 def setup():
+    config = ConfigParser()
+    config.read(conf_path)
+    config['dev']['check_csrf'] = 'false'
+    with open(conf_path, 'w') as configfile:
+        config.write(configfile)
+
     res = client.post('/login', data={
         'username': 'Admin',
         'password': 'webtex'
@@ -47,6 +53,7 @@ def teardown():
     config['ldap']['base_dn'] = ''
     config['redpen']['java_home'] = ''
     config['redpen']['conf'] = ''
+    config['dev']['check_csrf'] = 'true'
     f = open(conf_path, 'w')
     config.write(f)
     f.close()
