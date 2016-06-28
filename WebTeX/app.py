@@ -37,7 +37,7 @@ def check_csrf(request_):
     config = configparser.ConfigParser()
     config.read(conf)
     if config['dev']['check_csrf'] == 'true':
-        token = session.pop('_csrf_token', None)
+        token = session['_csrf_token']
         if not token or token != request_.json['_csrf_token']:
             return False
     return True
