@@ -124,80 +124,6 @@ def save_config():
     return jsonify(ResultSet=json.dumps(dictionary))
 
 
-@app.route('/preference')
-def preference():
-    return render_template('preference.html')
-
-
-@app.route('/registerUser', methods=['POST'])
-def register_user():
-    if not check_csrf(request):
-        abort(403)
-
-    dictionary = {}
-
-    username = request.json['username']
-    password = request.json['password']
-
-    con = sqlite3.connect(db)
-    cur = con.cursor()
-    sql = 'SELECT username FROM user WHERE username=(?)'
-    cur.execute(sql, (username,))
-    fetched = cur.fetchone()
-    if fetched is not None:
-        dictionary['result'] = 'Failure'
-        dictionary['cause'] = 'Your specified user is already exists.'
-        return jsonify(ResultSet=json.dumps(dictionary))
-
-    sql = 'INSERT INTO user(username, password) VALUES (?, ?)'
-    cur.execute(sql, (username, generate(password),))
-    con.commit()
-    cur.close()
-    con.close()
-
-    dictionary['result'] = 'Success'
-    return jsonify(ResultSet=json.dumps(dictionary))
-
-
-@app.route('/configureLdap', methods=['POST'])
-def configure_ldap():
-    if not check_csrf(request):
-        abort(403)
-
-    dictionary = {}
-
-    config = configparser.ConfigParser()
-    config.read(conf)
-    config['ldap']['server'] = request.json['ldap_address']
-    config['ldap']['port'] = request.json['ldap_port']
-    config['ldap']['base_dn'] = request.json['ldap_basedn']
-    f = open(conf, 'w')
-    config.write(f)
-    f.close()
-
-    dictionary['result'] = 'Success'
-    return jsonify(ResultSet=json.dumps(dictionary))
-
-
-@app.route('/changePath', methods=['POST'])
-def change_path():
-    if not check_csrf(request):
-        abort(403)
-
-    dictionary = {}
-
-    config = configparser.ConfigParser()
-    config.read(conf)
-    config['redpen']['java_home'] = request.json['java_home']
-    config['redpen']['conf'] = request.json['redpen_path']
-    f = open(conf, 'w')
-    config.write(f)
-    f.close()
-
-    dictionary['result'] = 'Success'
-    return jsonify(ResultSet=json.dumps(dictionary))
-
-
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -370,6 +296,80 @@ def compile_tex():
         else:
             dictionary['existpdf'] = 'False'
 
+    return jsonify(ResultSet=json.dumps(dictionary))
+
+
+@app.route('/preference')
+def preference():
+    return render_template('preference.html')
+
+
+@app.route('/registerUser', methods=['POST'])
+def register_user():
+    if not check_csrf(request):
+        abort(403)
+
+    dictionary = {}
+
+    username = request.json['username']
+    password = request.json['password']
+
+    con = sqlite3.connect(db)
+    cur = con.cursor()
+    sql = 'SELECT username FROM user WHERE username=(?)'
+    cur.execute(sql, (username,))
+    fetched = cur.fetchone()
+    if fetched is not None:
+        dictionary['result'] = 'Failure'
+        dictionary['cause'] = 'Your specified user is already exists.'
+        return jsonify(ResultSet=json.dumps(dictionary))
+
+    sql = 'INSERT INTO user(username, password) VALUES (?, ?)'
+    cur.execute(sql, (username, generate(password),))
+    con.commit()
+    cur.close()
+    con.close()
+
+    dictionary['result'] = 'Success'
+    return jsonify(ResultSet=json.dumps(dictionary))
+
+
+@app.route('/configureLdap', methods=['POST'])
+def configure_ldap():
+    if not check_csrf(request):
+        abort(403)
+
+    dictionary = {}
+
+    config = configparser.ConfigParser()
+    config.read(conf)
+    config['ldap']['server'] = request.json['ldap_address']
+    config['ldap']['port'] = request.json['ldap_port']
+    config['ldap']['base_dn'] = request.json['ldap_basedn']
+    f = open(conf, 'w')
+    config.write(f)
+    f.close()
+
+    dictionary['result'] = 'Success'
+    return jsonify(ResultSet=json.dumps(dictionary))
+
+
+@app.route('/changePath', methods=['POST'])
+def change_path():
+    if not check_csrf(request):
+        abort(403)
+
+    dictionary = {}
+
+    config = configparser.ConfigParser()
+    config.read(conf)
+    config['redpen']['java_home'] = request.json['java_home']
+    config['redpen']['conf'] = request.json['redpen_path']
+    f = open(conf, 'w')
+    config.write(f)
+    f.close()
+
+    dictionary['result'] = 'Success'
     return jsonify(ResultSet=json.dumps(dictionary))
 
 
