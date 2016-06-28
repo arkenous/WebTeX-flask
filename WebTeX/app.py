@@ -67,7 +67,7 @@ def initialize():
 
 @app.route('/readConfig', methods=['POST'])
 def read_config():
-    if not check_csrf(request.json['_csrf_token']):
+    if not app.testing and not check_csrf(request.json['_csrf_token']):
         abort(403)
 
     dictionary = {}
@@ -85,7 +85,7 @@ def read_config():
 
 @app.route('/saveConfig', methods=['POST'])
 def save_config():
-    if not check_csrf(request.json['_csrf_token']):
+    if not app.testing and not check_csrf(request.json['_csrf_token']):
         abort(403)
 
     dictionary = {}
