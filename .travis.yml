@@ -21,12 +21,12 @@ install:
   - "pip install selenium codeclimate-test-reporter"
 
 before_script:
-  - wget https://github.com/ajaxorg/ace-builds/archive/v1.2.3.tar.gz -O /tmp/ace.tar.gz
+  - wget https://github.com/ajaxorg/ace-builds/archive/v1.2.5.tar.gz -O /tmp/ace.tar.gz
   - mkdir /tmp/ace-builds
   - tar -xvf /tmp/ace.tar.gz -C /tmp/ace-builds --strip-components 1
   - mkdir WebTeX/static/ace-builds
   - mv /tmp/ace-builds/src-noconflict WebTeX/static/ace-builds/
-  - wget https://github.com/redpen-cc/redpen/releases/download/redpen-1.6.0/redpen-1.6.0.tar.gz -O /tmp/redpen.tar.gz
+  - wget https://github.com/redpen-cc/redpen/releases/download/redpen-1.7.4/redpen-1.7.4.tar.gz -O /tmp/redpen.tar.gz
   - mkdir redpen
   - tar -xvf /tmp/redpen.tar.gz -C redpen --strip-components 1
   - export PATH=$PATH:$PWD/redpen/bin/
