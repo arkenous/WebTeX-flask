@@ -124,6 +124,7 @@ def save_config():
     con.close()
 
     session.pop('username', None)
+    session.pop('cwd', None)
 
     dictionary['result'] = 'Success'
     return jsonify(ResultSet=json.dumps(dictionary))
@@ -181,6 +182,7 @@ def is_account_valid():
 @app.route('/logout')
 def logout():
     session.pop('username', None)
+    session.pop('cwd', None)
     return redirect('/login')
 
 
@@ -189,13 +191,26 @@ def read_directory():
     if not check_csrf(request, 'json'):
         abort(403)
 
+    dictionary = {}
     if not os.path.exists(storage) or not os.path.isdir(storage):
         os.mkdir(storage)
 
     user_storage = storage + session['username']
-    if not os.path.exists(user_storage) or not os.path.isdir(user_storage):
+    if os.path.exists(user_storage) and os.path.isdir(user_storage):
+        dictionary['name'] = os.listdir(user_storage)
+    else:
         os.mkdir(user_storage)
+        dictionary['name'] = ''
 
+    return jsonify(ResultSet=json.dumps(dictionary))
+
+
+@app.route('/createDirectory', methods=['POST'])
+def create_directory():
+    if not check_csrf(request, 'json'):
+        abort(403)
+
+    os.mkdir(storage + session['username'] + '/' + request.json['name'])
     return jsonify()
 
 
@@ -205,18 +220,19 @@ def set_directory():
         abort(403)
 
     dictionary = {}
-    user_storage = storage + session['username']
-    os.chdir(user_storage)
-    if os.path.exists(user_storage) and os.path.isdir(user_storage):
+    session['cwd'] = storage + session['username'] + '/' + request.json['name']
+    os.chdir(session.get('cwd'))
+    if os.path.exists(session['cwd']) and os.path.isdir(session['cwd']):
         dictionary['result'] = 'Success'
         # if document.tex exist, read it.
-        if os.path.exists(user_storage + '/document.tex'):
-            text = open(user_storage + '/document.tex').read()
+        if os.path.exists(session['cwd'] + '/document.tex'):
+            text = open(session['cwd'] + '/document.tex').read()
             dictionary['exist'] = 'True'
             dictionary['text'] = text
         else:
             dictionary['exist'] = 'False'
     else:
+        session['cwd'] = ''
         dictionary = {'result': 'Failure'}
 
     return jsonify(ResultSet=json.dumps(dictionary))
@@ -228,16 +244,15 @@ def read_filelist():
         abort(403)
 
     dictionary = {}
-    if session.get('username') == '' or session.get('username') is None:
+    if session.get('cwd') == '' or session.get('cwd') is None:
         dictionary['result'] = 'Failure'
     else:
         dictionary['result'] = 'Success'
-        user_storage = storage + session.get('username')
-        dictionary['list'] = os.listdir(user_storage)
+        dictionary['list'] = os.listdir(session['cwd'])
         dictionary['username'] = session['username']
-        if os.path.exists(os.path.join(user_storage, 'document.tex')):
+        if os.path.exists(os.path.join(session['cwd'], 'document.tex')):
             dictionary['tex'] = 'True'
-            if os.path.exists(os.path.join(user_storage, 'document.pdf')):
+            if os.path.exists(os.path.join(session['cwd'], 'document.pdf')):
                 dictionary['pdf'] = 'True'
             else:
                 dictionary['pdf'] = 'False'
@@ -253,14 +268,13 @@ def upload_file():
         abort(403)
 
     dictionary = {}
-    if session.get('username') == '' or session.get('username') is None:
+    if session.get('cwd') == '' or session.get('cwd') is None:
         dictionary['result'] = 'Failure'
     else:
-        user_storage = storage + session.get('username')
         file = request.files['file']
         if file:
             filename = utils.secure_filename(file.filename)
-            file.save(os.path.join(user_storage, filename))
+            file.save(os.path.join(session.get('cwd'), filename))
             dictionary['result'] = 'Success'
         else:
             dictionary['result'] = 'Failure'
@@ -274,13 +288,12 @@ def compile_tex():
         abort(403)
 
     dictionary = {}
-    if session.get('username') == '' or session.get('username') is None:
+    if session.get('cwd') == '' or session.get('cwd') is None:
         dictionary['result'] = 'Failure'
     else:
-        user_storage = storage + session.get('username')
         dictionary['result'] = 'Success'
         text = request.json['text']
-        os.chdir(user_storage)
+        os.chdir(session['cwd'])
         f = open('document.tex', 'w')
         f.write(text)
         f.close()
