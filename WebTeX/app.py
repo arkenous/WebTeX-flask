@@ -10,8 +10,7 @@ import os
 from base64 import b64encode
 from flask import Flask, render_template, session, request, redirect, \
     jsonify, abort
-from ldap3 import Server, Connection, \
-    AUTH_SIMPLE, STRATEGY_SYNC, GET_ALL_INFO, LDAPBindError
+from ldap3 import Server, Connection, SIMPLE, SYNC, ALL
 from werkzeug import utils
 from werkzeug.security import generate_password_hash as generate, \
     check_password_hash as check
@@ -159,13 +158,13 @@ def is_account_valid():
         base_dn = config['ldap']['base_dn']
         user_dn = 'uid=' + username + ',' + base_dn
 
-        s = Server(server, port=port, get_info=GET_ALL_INFO)
+        s = Server(server, port=port, get_info=ALL)
         try:
-            Connection(s, auto_bind=True, client_strategy=STRATEGY_SYNC,
+            Connection(s, auto_bind=True, client_strategy=SYNC,
                        user=user_dn, password=request.form['password'],
-                       authentication=AUTH_SIMPLE, check_names=True)
+                       authentication=SIMPLE, check_names=True)
             return True
-        except LDAPBindError:
+        except:
             return False
     if config['auth']['method'] == 'local':
         con = sqlite3.connect(db)
