@@ -46,7 +46,7 @@ Default account is **Admin** and password is **webtex**
    $ wget https://github.com/ajaxorg/ace-builds/archive/v1.2.5.tar.gz -O /tmp/ace.tar.gz
    $ mkdir /tmp/ace-builds
    $ tar -xvf /tmp/ace.tar.gz -C /tmp/ace-builds --strip-components 1
-   $ mkdir WebTeX/static/ace-builds
+   $ mkdir -p WebTeX/static/ace-builds
    $ mv /tmp/ace-builds/src-noconflict WebTeX/static/ace-builds/
    $ rm -f /tmp/ace.tar.gz && rm -rf /tmp/ace-builds
    ```
