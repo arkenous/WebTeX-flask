@@ -24,7 +24,7 @@ Default account is **Admin** and password is **webtex**
 - Python 3.x
   - [Flask](https://github.com/mitsuhiko/flask "https://github.com/mitsuhiko/flask")
   - [LDAP3](https://github.com/cannatag/ldap3 "https://github.com/cannatag/ldap3")
-- Java8
+- Java
 - TeX Live (texlive-lang-cjk)
   - This application use `platex` to compile LaTeX document.
 - [RedPen](https://github.com/redpen-cc/redpen/ "https://github.com/redpen-cc/redpen/")
