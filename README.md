@@ -31,5 +31,42 @@ Default account is **Admin** and password is **webtex**
   - Placement path: `static/ace-builds/src-noconflict/`
 - pdftotext (poppler-utils)
 
+## Setup
+
+1. Download and extract this project
+
+2. Install `texlive-lang-cjk (or texlive-langcjk)`, `openjdk-7-jre (or jre7-openjdk)`, `poppler`
+
+3. Install Python3 modules using pip: `pip install -r pip-requirements.txt`
+
+4. Install Ace.js
+
+   ```
+   $ wget https://github.com/ajaxorg/ace-builds/archive/v1.2.5.tar.gz -O /tmp/ace.tar.gz
+   $ mkdir /tmp/ace-builds
+   $ tar -xvf /tmp/ace.tar.gz -C /tmp/ace-builds --strip-components 1
+   $ mkdir WebTeX/static/ace-builds
+   $ mv /tmp/ace-builds/src-noconflict WebTeX/static/ace-builds/
+   $ rm -f /tmp/ace.tar.gz && rm -rf /tmp/ace-builds
+   ```
+
+5. Install RedPen
+
+   ```
+   $ wget https://github.com/redpen-cc/redpen/releases/download/redpen-1.7.4/redpen-1.7.4.tar.gz -O /tmp/redpen.tar.gz
+   $ mkdir redpen
+   $ tar -xvf /tmp/redpen.tar.gz -C redpen --strip-components 1
+   $ export PATH=$PATH:$PWD/redpen/bin
+   $ rm -f /tmp/redpen.tar.gz
+   ```
+
+6. Run this application
+
+   ```
+   $ python WebTeX/app.py
+   ```
+
+
 ## Author
+
 [Kensuke Kosaka](https://github.com/trileg "https://github.com/trileg")
