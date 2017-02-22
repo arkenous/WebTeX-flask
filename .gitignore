@@ -29,5 +29,8 @@ WebTeX/static/storage/
 # Ace
 WebTeX/static/ace-builds/
 
+# RedPen
+WebTeX/static/redpen/
+
 # Selenium
 selenium/
