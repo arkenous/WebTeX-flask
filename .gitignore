@@ -30,7 +30,7 @@ WebTeX/static/storage/
 WebTeX/static/ace-builds/
 
 # RedPen
-WebTeX/static/redpen/
+WebTeX/redpen/
 
 # Selenium
 selenium/
