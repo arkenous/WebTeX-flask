@@ -14,7 +14,7 @@ addons:
 before_install:
   - sudo sed -i 's/us-central1.gce/us-central1.gce.clouds/' /etc/apt/sources.list
   - sudo apt-get -qq update
-  - sudo apt-get install -y texlive-lang-cjk openjdk-7-jdk poppler-utils
+  - sudo apt-get install -y texlive-lang-cjk openjdk-7-jre-headless poppler-utils
 
 install:
   - "pip install -r pip-requirements.txt"
