@@ -45,12 +45,13 @@ function init() {
 }
 
 
+//TODO ディレクトリ削除機能を実装する
 // 初回起動およびディレクトリ作成時に実行
 function readDirectory() {
   var json = JSON.stringify({
     "_csrf_token": $("#_csrf_token").val()
   });
-  
+
   $.ajax({
     type: 'POST',
     url: '/readDirectory',
@@ -70,13 +71,25 @@ function readDirectory() {
 
       for (i = 0; i < directoryList.length; i++) {
         $("#directorylist").append(
-            "<li><a href='#' class='directoryItem' value='" + directoryList[i] + "'>" + directoryList[i] + "</a></li>"
+            "<li class='pull-left'><a href='#' class='directoryItem' value='" + directoryList[i] + "'>" + directoryList[i] + "</a></li>"
         );
+        $("#directorylist").append(
+            "<li class='pull-right'><a href='#' class='removeDirectory' value='" + directoryList[i] + "'>&times;</a></li>"
+        );
+        $("#directorylist").append(
+            "<div style='clear:both;'></div>"
+        )
       }
 
       $("a.directoryItem").click(function () {
         setDirectory($(this).attr("value"));
       });
+
+/*
+      $("a.removeDirectory").click(function() {
+        removeDirectory($(this).attr("value"));
+      });
+*/
     }
   });
   return false;
@@ -133,6 +146,29 @@ function setDirectory(directoryItem) {
   });
   return false;
 }
+
+//TODO 以降を実装する
+/*
+function removeDirectory(directoryItem) {
+  var json = JSON.stringify({
+    "name": directoryItem,
+    "_csrf_token": $("#_csrf_token").val()
+  });
+
+  $.ajax({
+    typr: 'POST',
+    url: '/removeDirectory',
+    data: json,
+    contentType: 'application/json',
+    success: function(data) {
+      var result = JSON.parse(data.ResultSet).result;
+      if (result == "Success") {
+
+      }
+    }
+  })
+}
+*/
 
 
 function readFilelist(directoryItem) {
