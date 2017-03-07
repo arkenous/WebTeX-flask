@@ -69,16 +69,19 @@ function readDirectory() {
       // data.ResultSetにPythonで作成したjsonが入る
       var directoryList = JSON.parse(data.ResultSet).name;
 
+      //TODO ディレクトリ要素がカレントディレクトリの場合は，×マークを追加しない
       for (i = 0; i < directoryList.length; i++) {
         $("#directorylist").append(
             "<li class='pull-left'><a href='#' class='directoryItem' value='" + directoryList[i] + "'>" + directoryList[i] + "</a></li>"
         );
-        $("#directorylist").append(
-            "<li class='pull-right'><a href='#' class='removeDirectory' value='" + directoryList[i] + "'>&times;</a></li>"
-        );
+        if (cwd !== directoryList[i]) {
+          $("#directorylist").append(
+              "<li class='pull-right'><a href='#' class='removeDirectory' value='" + directoryList[i] + "'>&times;</a></li>"
+          );
+        }
         $("#directorylist").append(
             "<div style='clear:both;'></div>"
-        )
+        );
       }
 
       $("a.directoryItem").click(function () {
@@ -132,6 +135,7 @@ function setDirectory(directoryItem) {
       if (result === "Success") {
         cwd = directoryItem;
         readFilelist(directoryItem);
+        readDirectory();
 
         // document.texファイルが存在するなら，読み込む
         var exist = JSON.parse(data.ResultSet).exist;
