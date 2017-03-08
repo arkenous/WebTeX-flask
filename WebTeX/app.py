@@ -7,6 +7,7 @@ import sqlite3
 import subprocess
 
 import os
+import shutil
 from base64 import b64encode
 from flask import Flask, render_template, session, request, redirect, \
     jsonify, abort
@@ -211,6 +212,18 @@ def create_directory():
 
     os.mkdir(storage + session['username'] + '/' + request.json['name'])
     return jsonify()
+
+
+@app.route('/removeDirectory', methods=['POST'])
+def remove_directory():
+    if not check_csrf(request, 'json'):
+        abort(403)
+
+    print(storage+session['username']+'/'+request.json['name'])
+    shutil.rmtree(storage + session['username'] + '/' + request.json['name'])
+    dictionary = {'result':'Success'}
+
+    return jsonify(ResultSet=json.dumps(dictionary))
 
 
 @app.route('/setDirectory', methods=['POST'])
